@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
+    kotlin("plugin.serialization") version "1.5.20"
 }
 
 group = "sillock"
@@ -35,6 +36,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("io.ktor:ktor-client-core:1.6.1")
+    implementation("io.ktor:ktor-client-cio:1.6.1")
+    implementation("io.ktor:ktor-client-logging:1.6.1")
+    implementation("io.ktor:ktor-client-serialization:1.6.1")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.kotest:kotest-runner-junit5:4.5.0")

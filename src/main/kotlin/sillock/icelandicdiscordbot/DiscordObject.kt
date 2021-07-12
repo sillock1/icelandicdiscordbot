@@ -8,13 +8,17 @@ object DiscordObject {
 
     fun init (jda: JDA)
     {
-        val updateCommands = jda.updateCommands()
+        val guild = jda.guilds.first()
+
+        val updateCommands = guild.updateCommands()//jda.updateCommands()
 
         val commandData = mutableListOf<CommandData>()
-        val data = CommandData("ping", "Pings the bot lmao")
-
-        commandData.add(data)
-        data.addOption(OptionType.MENTIONABLE, "ping", "I ping")
+        //val data = CommandData("ping", "Pings the bot lmao")
+        val ordCommand = CommandData("ord", "Fetches word from BÍN")
+        //data.addOption(OptionType.MENTIONABLE, "ping", "I ping")
+        ordCommand.addOption(OptionType.STRING, "word", "Any word class", true)
+        //commandData.add(data)
+        commandData.add(ordCommand)
 
         updateCommands.addCommands(commandData).queue()
     }
