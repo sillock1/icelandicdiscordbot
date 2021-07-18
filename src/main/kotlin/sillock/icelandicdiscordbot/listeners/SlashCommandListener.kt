@@ -4,23 +4,18 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.DmiiCoreService
+import sillock.icelandicdiscordbot.factories.CommandFactory
 
 @Component
 class SlashCommandListener(
-    private val dmiiCoreService: DmiiCoreService
+    private val dmiiCoreService: DmiiCoreService,
+    private val commandFactory: CommandFactory
 ) : ListenerAdapter() {
 
     override fun onSlashCommand(event: SlashCommandEvent) {
 
-        //probably command factory here
-
-        if(event.name.equals("ord"))
-        {
-            val wordParam = event.getOption("word")
-            val response = dmiiCoreService.getHeadword(wordParam!!.asString)
-
-            event.reply(response.toString()).queue()
-        }
+        var command = commandFactory.getCommandByName(event.name)
+        command?.execute(event)
 
         if(!event.name.equals("ping")) return
         val time = System.currentTimeMillis()
