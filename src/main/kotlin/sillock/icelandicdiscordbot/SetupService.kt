@@ -8,11 +8,9 @@ import sillock.icelandicdiscordbot.models.commands.ICommand
 import javax.annotation.PostConstruct
 
 @Component
-@Profile("!test")
-class SetupService     (private val jdaCreator: JdaCreator,
-                        private val listeners: List<ListenerAdapter>,
-                        private val commands: List<ICommand>
-){
+class SetupService(private val jdaCreator: JdaCreator,
+                   private val listeners: List<ListenerAdapter>,
+                   private val commands: List<ICommand>){
     @PostConstruct
     fun setup()
     {

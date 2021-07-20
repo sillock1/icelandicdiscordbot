@@ -8,7 +8,6 @@ import sillock.icelandicdiscordbot.factories.CommandFactory
 
 @Component
 class SlashCommandListener(
-    private val dmiiCoreService: DmiiCoreService,
     private val commandFactory: CommandFactory
 ) : ListenerAdapter() {
 
@@ -16,11 +15,5 @@ class SlashCommandListener(
 
         var command = commandFactory.getCommandByName(event.name)
         command?.execute(event)
-
-        if(!event.name.equals("ping")) return
-        val time = System.currentTimeMillis()
-        event.reply("Pong!").setEphemeral(false)
-            .flatMap { event.hook.editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)}.queue()
     }
-
 }
