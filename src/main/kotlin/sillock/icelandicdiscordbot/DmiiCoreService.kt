@@ -37,4 +37,9 @@ class DmiiCoreService (private val apiProperties: ApiProperties){
         val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/beygingarmynd/${wordType}/${word}")
         httpResponseHandler.handleResponse(response)
     }
+
+    fun getDeclensionsByGuid(guid: String) : List<Word> = runBlocking {
+        val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/ord/${guid}")
+        httpResponseHandler.handleResponse(response)
+    }
 }

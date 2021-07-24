@@ -1,5 +1,5 @@
 package sillock.icelandicdiscordbot
-
+/*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.interactions.commands.Command
 import net.dv8tion.jda.api.interactions.commands.OptionType
@@ -32,4 +32,4 @@ object DiscordObject{
 
         updateCommands.addCommands(commandData).queue()
     }
-}
+}*/

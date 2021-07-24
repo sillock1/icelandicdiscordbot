@@ -1,5 +1,5 @@
 package sillock.icelandicdiscordbot.creators
-
+/*
 import net.dv8tion.jda.api.interactions.commands.Command
 import org.springframework.stereotype.Component
 
@@ -12,4 +12,4 @@ class CommandChoiceCreator {
         }
         return commandChoices
     }
-}
+}*/

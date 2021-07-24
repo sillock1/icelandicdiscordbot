@@ -29,7 +29,8 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:4.3.0_294")
+    implementation("org.javacord:javacord:3.3.2")
+   // implementation("net.dv8tion:JDA:4.3.0_294")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-web")
