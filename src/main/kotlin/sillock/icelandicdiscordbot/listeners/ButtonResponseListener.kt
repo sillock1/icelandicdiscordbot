@@ -4,7 +4,7 @@ import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.event.interaction.MessageComponentCreateEvent
 import org.javacord.api.listener.interaction.MessageComponentCreateListener
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.DmiiCoreService
+import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.creators.imagecreators.NounDeclensionImageCreator
 import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
 import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm

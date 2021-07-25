@@ -1,4 +1,4 @@
-package sillock.icelandicdiscordbot
+package sillock.icelandicdiscordbot.services
 
 import org.javacord.api.DiscordApi
 import org.javacord.api.interaction.SlashCommandBuilder

@@ -57,7 +57,6 @@ class NounDeclensionImageCreator{
     }
 
     fun create(subTitle: String, nounDeclensionFormList: List<NounDeclensionForm>): BufferedImage {
-        var drawingString: String
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
         val g2d = bufferedImage.createGraphics()
 

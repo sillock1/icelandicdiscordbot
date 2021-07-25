@@ -6,7 +6,7 @@ import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.DmiiCoreService
+import sillock.icelandicdiscordbot.services.DmiiCoreService
 
 @Component
 class ConjugateCommand(private val dmiiCoreService: DmiiCoreService): ICommand {

@@ -1,4 +1,4 @@
-package sillock.icelandicdiscordbot
+package sillock.icelandicdiscordbot.services
 
 import io.ktor.client.*
 import io.ktor.client.call.*

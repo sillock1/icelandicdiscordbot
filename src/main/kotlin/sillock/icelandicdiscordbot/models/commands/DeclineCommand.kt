@@ -5,24 +5,24 @@ package sillock.icelandicdiscordbot.models.commands
 //import net.dv8tion.jda.api.interactions.commands.OptionType
 
 import org.javacord.api.entity.message.MessageBuilder
-import org.javacord.api.entity.message.component.ActionRow
-import org.javacord.api.entity.message.component.Button
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionChoice
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.DmiiCoreService
+import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.creators.imagecreators.NounDeclensionImageCreator
 import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
 import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
+import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import java.awt.image.BufferedImage
 
 
 @Component
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
                      private val nounDeclensionMapper: NounDeclensionMapper,
-                     private val nounDeclensionImageCreator: NounDeclensionImageCreator) : ICommand {
+                     private val nounDeclensionImageCreator: NounDeclensionImageCreator,
+                     private val dmiiDuplicateWordProcessor: DmiiDuplicateWordProcessor) : ICommand {
 
     override val name: String
         get() = "decline"
@@ -53,35 +53,24 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
         val wordParam = event.secondOptionStringValue
         val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get())
 
-        if(response.count() > 1){
-            event.createImmediateResponder().setContent("Sorry I couldn't find the exact word you were looking for...").respond()
-            var msgBuilder = MessageBuilder().setContent("Here's what I could find")
-            for(word in response){
-                msgBuilder.addComponents(
-                    ActionRow.of(
-                        Button.success(word.guid, word.ord)
-                    )
-                )
-            }
-            msgBuilder.send(event.channel.get())
+        if(response.count() != 1){
+            dmiiDuplicateWordProcessor.response(event, response)
             return
         }
 
-
+        val word = response.first()
         val declinedList: MutableList<NounDeclensionForm> = mutableListOf()
         val imageList: MutableList<BufferedImage> = mutableListOf()
         var gender: String = ""
-        for (word in response) {
-            word.bmyndir.forEach {
-                    x ->
-                val res = nounDeclensionMapper.map(x.g, x.b)
-                if(res != null) declinedList.add(res)
-            }
-            if(word.kyn == "kvk") gender = "kvenkynsnafnorð (Female noun)"
-            if(word.kyn == "hk") gender = "hvorugkynsnafnorð (Neuter noun)"
-            if(word.kyn == "kk") gender = "karlkynsnafnorð (Male noun)"
-            imageList.add(nounDeclensionImageCreator.create(gender, declinedList))
+        word.bmyndir.forEach {x ->
+            val res = nounDeclensionMapper.map(x.g, x.b)
+            if(res != null) declinedList.add(res)
         }
+        if(word.kyn == "kvk") gender = "kvenkynsnafnorð (Female noun)"
+        if(word.kyn == "hk") gender = "hvorugkynsnafnorð (Neuter noun)"
+        if(word.kyn == "kk") gender = "karlkynsnafnorð (Male noun)"
+        imageList.add(nounDeclensionImageCreator.create(gender, declinedList))
+
 
         val messageBuilder = MessageBuilder()
 
