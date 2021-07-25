@@ -7,116 +7,96 @@ import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 import java.awt.Color
 import java.awt.Font
+import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 @Component
 class NounDeclensionImageCreator{
+    val width = 1000
+    val height = 700
+    val backgroundColor = Color(44, 47, 51) //Discord embed colour
+    val tableBorderColour = Color(192, 192, 192)
+
+    fun populateTable(g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: List<Triple<String, String, String>>){
+
+        g2d.color = Color.BLACK
+        g2d.font= Font("Segoe UI", Font.BOLD, 18)
+        g2d.drawString(tableHeader, offsetX + 10, offsetY + (rowSpacing*0.5).roundToInt())
+        g2d.color = Color.WHITE
+        var offsetXSpacing = columnSpacing
+        var offsetYSpacing = (offsetY+(rowSpacing*1.5)).roundToInt()
+        for(subHeading in subHeadingList) {
+            g2d.drawString(subHeading, (offsetX)+offsetXSpacing, offsetYSpacing)
+            offsetXSpacing += columnSpacing * 2
+        }
+
+        offsetYSpacing = (offsetY+(rowSpacing*2.5).roundToInt())
+        for(row in contentList){
+            g2d.drawString(row.first.substring(0, 3) + ".", offsetX + 10, offsetYSpacing)
+            g2d.drawString(row.second, offsetX+(columnSpacing), offsetYSpacing)
+            g2d.drawString(row.third, offsetX+(columnSpacing*3), offsetYSpacing)
+            offsetYSpacing+=rowSpacing
+        }
+    }
+
+    fun drawTable(g2d: Graphics2D, numberOfRows: Int, offsetX: Int, offsetY: Int, sizeX: Int, rowSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: List<Triple<String, String, String>>,
+                  populateTable: (g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: List<Triple<String, String, String>>) -> Unit){
+        g2d.color = tableBorderColour//light grey
+        val sizeY = ((numberOfRows+1)*rowSpacing)+offsetY
+        g2d.fillRect(offsetX, offsetY, sizeX, rowSpacing)
+        g2d.drawLine(offsetX, offsetY, offsetX, sizeY) //First vertical
+        g2d.drawLine(offsetX+sizeX, offsetY, offsetX+sizeX, sizeY) //second vertical
+
+        for(i in 1..numberOfRows+1) {
+            g2d.drawLine(offsetX, offsetY+(i*rowSpacing), offsetX+sizeX, offsetY+(i*rowSpacing))
+        }
+        populateTable(g2d, offsetX, offsetY, rowSpacing, (sizeX*0.2).roundToInt(), tableHeader, subHeadingList, contentList)
+    }
+
     fun create(subTitle: String, nounDeclensionFormList: List<NounDeclensionForm>): BufferedImage {
         var drawingString: String
-        val bufferedImage = BufferedImage(1000, 700, BufferedImage.TYPE_INT_RGB)
+        val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
         val g2d = bufferedImage.createGraphics()
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.color = Color(44, 47, 51) //Discord embed colour
-        g2d.fillRect(0,0,1000, 700)
-        g2d.color = Color(192, 192, 192)//light grey
 
-        g2d.drawLine(60, 260, 60, 670) //First vertical
-        g2d.drawLine(460, 260, 460, 670) //second vertical
-        g2d.drawLine(540, 260, 540, 670) //third vertical
-        g2d.drawLine(940, 260, 940, 670) //Fourth vertical
-        g2d.drawLine(60, 390, 460, 390)   //First row
-        g2d.drawLine(540, 390, 940, 390)   //First row
+        g2d.color = backgroundColor
+        g2d.fillRect(0,0,width, height)
 
-        g2d.drawLine(60, 460, 460, 460)   //second row
-        g2d.drawLine(540, 460, 940, 460)   //second row
+        val subHeadingList = listOf("No Article", "With article")
+        val singleList = nounDeclensionFormList.filter{x -> x.grammaticalNumber == GrammaticalNumber.Singular}
 
-        g2d.drawLine(60, 530, 460, 530)   //second row
-        g2d.drawLine(540, 530, 940, 530)   //second row
+        var grouped = singleList.groupBy { it.grammaticalForm }
 
-        g2d.drawLine(60, 600, 460, 600)   //second row
-        g2d.drawLine(540, 600, 940, 600)   //second row
+        var tripleList : MutableList<Triple<String, String, String>> = mutableListOf()
+        for(group in grouped) {
+            val forms = grouped.getValue(group.key)
+            tripleList.add(Triple(group.key.toString(), forms.getOrNull(0)?.inflectedString ?: "Undefined", forms.getOrNull(1)?.inflectedString ?: "Undefined"))
+        }
 
-        g2d.drawLine(60, 670, 460, 670)   //second row
-        g2d.drawLine(540, 670, 940, 670)   //second row
+        drawTable(g2d, 5, 60, 260, 400, 70, "Singular",  subHeadingList, tripleList, ::populateTable)
+
+        val pluralList = nounDeclensionFormList.filter{x -> x.grammaticalNumber == GrammaticalNumber.Plural}
+        tripleList = mutableListOf()
+        grouped = pluralList.groupBy({it.grammaticalForm})
+        for(group in grouped) {
+            val forms = grouped.getValue(group.key)
+            tripleList.add(Triple(group.key.toString(), forms.getOrNull(0)?.inflectedString ?: "Undefined", forms.getOrNull(1)?.inflectedString ?: "Undefined"))
+        }
+
+        drawTable(g2d, 5, 540, 260, 400, 70, "Plural",  subHeadingList, tripleList, ::populateTable)
 
 
-        g2d.fillRect(60, 260, 400, 60)
-        g2d.fillRect(540, 260, 400, 60)
         g2d.color = Color.WHITE
         g2d.font= Font("Segoe UI", Font.BOLD, 72)
         g2d.drawString("Noun declension", 60, 100)
         g2d.font= Font("Segoe UI", Font.BOLD, 24)
 
-
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Nominative && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 60, 160)
-        g2d.font= Font("Segoe UI", Font.BOLD, 20)
-        g2d.color = Color.ORANGE
-
-        g2d.drawString(subTitle, 60, 220)
-        g2d.color = Color.BLACK
-        g2d.font= Font("Segoe UI", Font.BOLD, 18)
-        g2d.drawString("Singular (Eintala)", 70, 300)
-        g2d.drawString("Plural (Fleirtala)", 550, 300)
-        g2d.color = Color.WHITE
-        g2d.drawString("án greinis", 140, 360)
-        g2d.drawString("með greini", 280, 360)
-
-        g2d.drawString("Nf.", 70, 430)
-        g2d.drawString("Þf.", 70, 500)
-        g2d.drawString("Þgf.", 70, 570)
-        g2d.drawString("Ef.", 70, 640)
-
-        g2d.drawString(drawingString, 140, 430)
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Nominative && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 280, 430)
-
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Accusative && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 140, 500)
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Accusative && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 280, 500)
-
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Dative && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 140, 570)
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Dative && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 280, 570)
-
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Genitive && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 140, 640)
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Genitive && x.grammaticalNumber == GrammaticalNumber.Singular}.inflectedString
-        g2d.drawString(drawingString, 280, 640)
-
-        g2d.drawString("án greinis", 620, 360)
-        g2d.drawString("með greini", 760, 360)
-
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Nominative && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 620, 430)
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Nominative && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 760, 430)
-
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Accusative && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 620, 500)
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Accusative && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 760, 500)
-
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Dative && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 620, 570)
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Dative && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 760, 570)
-
-        drawingString = nounDeclensionFormList.first{x -> x.withArticle && x.grammaticalForm == GrammaticalForm.Genitive && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 620, 640)
-        drawingString = nounDeclensionFormList.first{x -> !x.withArticle && x.grammaticalForm == GrammaticalForm.Genitive && x.grammaticalNumber == GrammaticalNumber.Plural}.inflectedString
-        g2d.drawString(drawingString, 760, 640)
-
-        g2d.drawString("Nf.", 550, 430)
-        g2d.drawString("Þf.", 550, 500)
-        g2d.drawString("Þgf.", 550, 570)
-        g2d.drawString("Ef.", 550, 640)
-
         g2d.dispose()
+
         return bufferedImage
     }
 }
