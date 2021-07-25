@@ -1,4 +1,4 @@
-package sillock.icelandicdiscordbot
+package sillock.icelandicdiscordbot.services
 
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -35,6 +35,11 @@ class DmiiCoreService (private val apiProperties: ApiProperties){
 
     fun getDeclensions(wordType: String, word: String) : List<Word> = runBlocking {
         val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/beygingarmynd/${wordType}/${word}")
+        httpResponseHandler.handleResponse(response)
+    }
+
+    fun getDeclensionsByGuid(guid: String) : List<Word> = runBlocking {
+        val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/ord/${guid}")
         httpResponseHandler.handleResponse(response)
     }
 }

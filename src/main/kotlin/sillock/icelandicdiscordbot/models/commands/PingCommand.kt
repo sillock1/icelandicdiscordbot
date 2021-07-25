@@ -1,6 +1,7 @@
 package sillock.icelandicdiscordbot.models.commands
 
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
+import org.javacord.api.interaction.SlashCommandInteraction
+import org.javacord.api.interaction.SlashCommandOption
 import org.springframework.stereotype.Component
 
 @Component
@@ -9,12 +10,11 @@ class PingCommand: ICommand {
         get() = "ping"
     override val description: String
         get() = "Pings the bot"
-    override val options: List<CommandOption>
+    override val options: List<SlashCommandOption>
         get() = listOf()
 
-    override fun execute(event: SlashCommandEvent) {
+    override fun execute(event: SlashCommandInteraction) {
         val time = System.currentTimeMillis()
-        event.reply("Pong!").setEphemeral(false)
-            .flatMap { event.hook.editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)}.queue()
+        event.createImmediateResponder().setContent("Pong: ${System.currentTimeMillis() - time} ms").respond()
     }
 }
