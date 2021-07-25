@@ -1,9 +1,7 @@
 package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.models.embedmodels.InflectedForm
 import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
-import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 import java.awt.Color
 import java.awt.Font
@@ -11,7 +9,6 @@ import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import kotlin.math.roundToInt
-import kotlin.math.sin
 
 @Component
 class NounDeclensionImageCreator{

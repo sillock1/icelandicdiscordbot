@@ -1,9 +1,5 @@
 package sillock.icelandicdiscordbot.models.commands
 
-//import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
-//import net.dv8tion.jda.api.interactions.commands.Command
-//import net.dv8tion.jda.api.interactions.commands.OptionType
-
 import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
@@ -16,7 +12,6 @@ import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
 import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import java.awt.image.BufferedImage
-
 
 @Component
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,

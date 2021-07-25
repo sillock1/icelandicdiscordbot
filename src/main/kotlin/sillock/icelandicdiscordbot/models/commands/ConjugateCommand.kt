@@ -1,7 +1,5 @@
 package sillock.icelandicdiscordbot.models.commands
 
-//import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
-//import net.dv8tion.jda.api.interactions.commands.OptionType
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionType

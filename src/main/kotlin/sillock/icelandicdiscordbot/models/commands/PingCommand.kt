@@ -1,13 +1,8 @@
 package sillock.icelandicdiscordbot.models.commands
 
-import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
 import org.springframework.stereotype.Component
-import java.awt.Color
-import java.awt.Font
-import java.awt.RenderingHints
-import java.awt.image.BufferedImage
 
 @Component
 class PingCommand: ICommand {

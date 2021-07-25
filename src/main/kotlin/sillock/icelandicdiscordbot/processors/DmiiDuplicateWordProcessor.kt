@@ -1,6 +1,5 @@
 package sillock.icelandicdiscordbot.processors
 
-import org.javacord.api.entity.channel.TextChannel
 import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.entity.message.component.ActionRow
 import org.javacord.api.entity.message.component.Button
