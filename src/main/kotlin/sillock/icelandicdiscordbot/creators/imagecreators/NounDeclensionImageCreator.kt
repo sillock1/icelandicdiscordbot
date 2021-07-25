@@ -94,6 +94,8 @@ class NounDeclensionImageCreator{
         g2d.font= Font("Segoe UI", Font.BOLD, 72)
         g2d.drawString("Noun declension", 60, 100)
         g2d.font= Font("Segoe UI", Font.BOLD, 24)
+        g2d.color = Color.ORANGE
+        g2d.drawString(subTitle, 60, 220)
 
         g2d.dispose()
 

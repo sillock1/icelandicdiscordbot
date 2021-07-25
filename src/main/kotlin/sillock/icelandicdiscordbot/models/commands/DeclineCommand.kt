@@ -39,17 +39,12 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
                                 SlashCommandOptionChoice.create("The Reflexive Pronoun (Afturbeygt fornafn)", "afn"),
                                 SlashCommandOptionChoice.create("Adverb (Atviksorð)", "ao"),
                                 SlashCommandOptionChoice.create("Other Pronouns (Önnur fornöfn)", "fn"),
-                                SlashCommandOptionChoice.create("Prepositions (Forsetningar)", "fs"),
                                 SlashCommandOptionChoice.create("The Definite Article (Greinir)", "gr"),
                                 SlashCommandOptionChoice.create("Adjectives (Lýsingarorð)", "lo"),
-                                SlashCommandOptionChoice.create("The Nominative Marker (Nafnháttarmerki)", "nhm"),
                                 SlashCommandOptionChoice.create("Noun (Nafnorð)", "no"),
                                 SlashCommandOptionChoice.create("Personal Pronouns (Persónufornöfn)", "pfn"),
                                 SlashCommandOptionChoice.create("Ordinals (Raðtölur)", "rt"),
-                                SlashCommandOptionChoice.create("Verbs (Sagnorð)", "so"),
-                                SlashCommandOptionChoice.create("Conjunctions (Samtengingar)", "st"),
-                                SlashCommandOptionChoice.create("Numerals (Töluorð)", "to"),
-                                SlashCommandOptionChoice.create("Exclamations (Upphrópanir)", "uh"),
+                                SlashCommandOptionChoice.create("Numerals (Töluorð)", "to")
                         )),
             SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The word to search", true))
 
