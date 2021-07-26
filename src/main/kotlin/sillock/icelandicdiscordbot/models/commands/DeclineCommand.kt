@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.creators.imagecreators.NounDeclensionImageCreator
 import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
-import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
+import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import java.awt.image.BufferedImage
 
@@ -64,8 +64,7 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
         if(word.kyn == "kvk") gender = "kvenkynsnafnorð (Female noun)"
         if(word.kyn == "hk") gender = "hvorugkynsnafnorð (Neuter noun)"
         if(word.kyn == "kk") gender = "karlkynsnafnorð (Male noun)"
-        imageList.add(nounDeclensionImageCreator.create(gender, declinedList))
-
+        imageList.add(nounDeclensionImageCreator.create(word.ord, gender, declinedList))
 
         val messageBuilder = MessageBuilder()
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.creators.imagecreators.NounDeclensionImageCreator
 import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
-import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
+import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import java.awt.image.BufferedImage
 
 @Component
@@ -26,7 +26,7 @@ class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
                 val res = nounDeclensionMapper.map(x.g, x.b)
                 if(res != null) declinedList.add(res)
             }
-            imageList.add(nounDeclensionImageCreator.create(word.kyn, declinedList))
+            imageList.add(nounDeclensionImageCreator.create(word.ord, word.kyn, declinedList))
         }
         event.interaction.createImmediateResponder().setContent("Here's your word!").respond()
         val messageBuilder = MessageBuilder()

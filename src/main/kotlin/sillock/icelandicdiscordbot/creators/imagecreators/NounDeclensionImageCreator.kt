@@ -1,8 +1,7 @@
 package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
-import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
+import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
@@ -11,13 +10,20 @@ import java.awt.image.BufferedImage
 import kotlin.math.roundToInt
 
 @Component
-class NounDeclensionImageCreator{
-    val width = 1000
-    val height = 700
-    val backgroundColor = Color(44, 47, 51) //Discord embed colour
-    val tableBorderColour = Color(192, 192, 192)
+class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCreator){
 
-    fun populateTable(g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: List<Triple<String, String, String>>){
+    /*
+        @param g2d The graphics canvas for drawing
+        @param offsetX The initial offset from the left side
+        @param offsetY The initial offset from the top side
+        @param rowSpacing The spacing difference between each row in the table
+        @param columnSpacing The spacing difference between each column in the table
+        @param tableHeader The title of the table
+        @param subHeadingList Each column subheading
+        @param contentList A Triplet object list that contains each row's data to print
+                           grammatical case, the article form of the noun, and the non-article form of the noun
+     */
+    fun populateTable(g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: MutableList<MutableList<String>>){
 
         g2d.color = Color.BLACK
         g2d.font= Font("Segoe UI", Font.BOLD, 18)
@@ -32,28 +38,23 @@ class NounDeclensionImageCreator{
 
         offsetYSpacing = (offsetY+(rowSpacing*2.5).roundToInt())
         for(row in contentList){
-            g2d.drawString(row.first.substring(0, 3) + ".", offsetX + 10, offsetYSpacing)
-            g2d.drawString(row.second, offsetX+(columnSpacing), offsetYSpacing)
-            g2d.drawString(row.third, offsetX+(columnSpacing*3), offsetYSpacing)
+            g2d.drawString(row.elementAt(0).substring(0, 3) + ".", offsetX + 10, offsetYSpacing)
+            g2d.drawString(row.elementAt(1), offsetX+(columnSpacing), offsetYSpacing)
+            g2d.drawString(row.elementAt(2), offsetX+(columnSpacing*3), offsetYSpacing)
             offsetYSpacing+=rowSpacing
         }
     }
 
-    fun drawTable(g2d: Graphics2D, numberOfRows: Int, offsetX: Int, offsetY: Int, sizeX: Int, rowSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: List<Triple<String, String, String>>,
-                  populateTable: (g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: List<Triple<String, String, String>>) -> Unit){
-        g2d.color = tableBorderColour//light grey
-        val sizeY = ((numberOfRows+1)*rowSpacing)+offsetY
-        g2d.fillRect(offsetX, offsetY, sizeX, rowSpacing)
-        g2d.drawLine(offsetX, offsetY, offsetX, sizeY) //First vertical
-        g2d.drawLine(offsetX+sizeX, offsetY, offsetX+sizeX, sizeY) //second vertical
+    fun create(title: String, subTitle: String, nounDeclensionFormList: List<NounDeclensionForm>): BufferedImage {
+        var width = 500
+        val height = 700
+        val backgroundColor = Color(44, 47, 51) //Discord embed colour
 
-        for(i in 1..numberOfRows+1) {
-            g2d.drawLine(offsetX, offsetY+(i*rowSpacing), offsetX+sizeX, offsetY+(i*rowSpacing))
-        }
-        populateTable(g2d, offsetX, offsetY, rowSpacing, (sizeX*0.2).roundToInt(), tableHeader, subHeadingList, contentList)
-    }
+        val grouped = nounDeclensionFormList.groupBy { it.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it.grammaticalForm } }
+        width = (width * grouped.size)
 
-    fun create(subTitle: String, nounDeclensionFormList: List<NounDeclensionForm>): BufferedImage {
+        var tableXOffset = 60
+
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
         val g2d = bufferedImage.createGraphics()
 
@@ -63,32 +64,30 @@ class NounDeclensionImageCreator{
         g2d.fillRect(0,0,width, height)
 
         val subHeadingList = listOf("No Article", "With article")
-        val singleList = nounDeclensionFormList.filter{x -> x.grammaticalNumber == GrammaticalNumber.Singular}
 
-        var grouped = singleList.groupBy { it.grammaticalForm }
 
-        var tripleList : MutableList<Triple<String, String, String>> = mutableListOf()
-        for(group in grouped) {
-            val forms = grouped.getValue(group.key)
-            tripleList.add(Triple(group.key.toString(), forms.getOrNull(0)?.inflectedString ?: "Undefined", forms.getOrNull(1)?.inflectedString ?: "Undefined"))
+
+        for(grammaticalNum in grouped){
+            val imageDataList : MutableList<MutableList<String>> = mutableListOf()
+            for(grammaticalForm in grammaticalNum.value){
+                var rowData : MutableList<String> = mutableListOf()
+                val nounDeclensionForms = grammaticalForm.value
+                rowData.add(grammaticalForm.key.toString())
+                rowData.add(nounDeclensionForms.getOrNull(0)?.inflectedString ?: "Undefined")
+                rowData.add(nounDeclensionForms.getOrNull(1)?.inflectedString ?: "Undefined")
+                imageDataList.add(rowData)
+            }
+            tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 400, 70, grammaticalNum.key.toString(),  subHeadingList, imageDataList, ::populateTable)
+            tableXOffset+=480
         }
-
-        drawTable(g2d, 5, 60, 260, 400, 70, "Singular",  subHeadingList, tripleList, ::populateTable)
-
-        val pluralList = nounDeclensionFormList.filter{x -> x.grammaticalNumber == GrammaticalNumber.Plural}
-        tripleList = mutableListOf()
-        grouped = pluralList.groupBy({it.grammaticalForm})
-        for(group in grouped) {
-            val forms = grouped.getValue(group.key)
-            tripleList.add(Triple(group.key.toString(), forms.getOrNull(0)?.inflectedString ?: "Undefined", forms.getOrNull(1)?.inflectedString ?: "Undefined"))
-        }
-
-        drawTable(g2d, 5, 540, 260, 400, 70, "Plural",  subHeadingList, tripleList, ::populateTable)
-
 
         g2d.color = Color.WHITE
-        g2d.font= Font("Segoe UI", Font.BOLD, 72)
-        g2d.drawString("Noun declension", 60, 100)
+        g2d.font= Font("Segoe UI", Font.BOLD, 64)
+        g2d.drawString("Declension", 60, 100)
+
+        g2d.font= Font("Segoe UI", Font.BOLD, 36)
+        g2d.drawString(title, 60, 160)
+
         g2d.font= Font("Segoe UI", Font.BOLD, 24)
         g2d.color = Color.ORANGE
         g2d.drawString(subTitle, 60, 220)
