@@ -5,6 +5,7 @@ import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
+import java.util.*
 
 @Component
 class ConjugateCommand(private val dmiiCoreService: DmiiCoreService): ICommand {
@@ -17,7 +18,7 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService): ICommand {
 
     override fun execute(event: SlashCommandInteraction) {
         val wordParam = event.firstOptionStringValue
-        val response = dmiiCoreService.getVerbConjugation(wordParam.get())
+        val response = dmiiCoreService.getVerbConjugation(wordParam.get().lowercase(Locale.getDefault()))
         event.channel.get().sendMessage(response.toString())
     }
 }

@@ -18,6 +18,7 @@ import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import sillock.icelandicdiscordbot.processors.InflectionProcessor
 import java.awt.image.BufferedImage
+import java.util.*
 
 @Component
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
@@ -50,7 +51,8 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
     override fun execute(event: SlashCommandInteraction) {
         val wordTypeParam = event.firstOptionStringValue
         val wordParam = event.secondOptionStringValue
-        val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get())
+        val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get().lowercase(Locale.getDefault())
+        )
 
         if(response.count() != 1){
             dmiiDuplicateWordProcessor.response(event, response)
