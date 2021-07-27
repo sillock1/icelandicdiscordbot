@@ -1,4 +1,4 @@
-package sillock.icelandicdiscordbot.models.commands
+package sillock.icelandicdiscordbot.commands
 
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption

@@ -1,7 +1,7 @@
 package sillock.icelandicdiscordbot.factories
 
 import org.springframework.stereotype.Service
-import sillock.icelandicdiscordbot.models.commands.ICommand
+import sillock.icelandicdiscordbot.commands.ICommand
 
 @Service
 class CommandFactory (private val commands: List<ICommand>){

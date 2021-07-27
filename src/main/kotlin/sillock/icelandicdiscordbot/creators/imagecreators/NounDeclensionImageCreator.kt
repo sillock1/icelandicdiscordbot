@@ -1,6 +1,8 @@
 package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
+import sillock.icelandicdiscordbot.mappers.NounGenderMapper
+import sillock.icelandicdiscordbot.models.Word
 import sillock.icelandicdiscordbot.models.enums.InflectionType
 import sillock.icelandicdiscordbot.models.imagegeneration.InflectedForm
 import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
@@ -12,7 +14,8 @@ import java.awt.image.BufferedImage
 import kotlin.math.roundToInt
 
 @Component
-class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCreator) : IImageCreator{
+class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCreator,
+                                 private val nounGenderMapper: NounGenderMapper) : IImageCreator{
     override val inflectionType: InflectionType
         get() = InflectionType.Article
 
@@ -49,7 +52,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         }
     }
 
-    override fun create(title: String, subTitle: String, inflectionalFormList: List<InflectedForm>): BufferedImage {
+    override fun create(word: Word, inflectionalFormList: List<InflectedForm>): BufferedImage {
         var width = 500
         val height = 700
         val backgroundColor = Color(44, 47, 51) //Discord embed colour
@@ -68,7 +71,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         g2d.fillRect(0,0,width, height)
 
         val subHeadingList = listOf("No Article", "With article")
-
+        val gender = nounGenderMapper.map(word.kyn)
         for(grammaticalNum in grouped){
             val imageDataList : MutableList<MutableList<String>> = mutableListOf()
             for(grammaticalForm in grammaticalNum.value){
@@ -88,11 +91,11 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         g2d.drawString("Declension", 60, 100)
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
-        g2d.drawString(title, 60, 160)
+        g2d.drawString(word.ord, 60, 160)
 
         g2d.font= Font("Segoe UI", Font.BOLD, 24)
         g2d.color = Color.ORANGE
-        g2d.drawString(subTitle, 60, 220)
+        g2d.drawString(gender, 60, 220)
 
         g2d.dispose()
 

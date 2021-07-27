@@ -3,7 +3,7 @@ package sillock.icelandicdiscordbot.services
 import org.javacord.api.DiscordApi
 import org.javacord.api.interaction.SlashCommandBuilder
 import org.springframework.stereotype.Service
-import sillock.icelandicdiscordbot.models.commands.ICommand
+import sillock.icelandicdiscordbot.commands.ICommand
 
 @Service
 class CommandRegistrationService(private val commands: List<ICommand>) {

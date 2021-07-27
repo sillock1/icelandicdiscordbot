@@ -9,7 +9,6 @@ class WordTypeMapper {
         return when (wordType){
             "no" -> InflectionType.Article
             "pfn" -> InflectionType.PersonalPronoun
-            "afn" -> InflectionType.ReflexivePronoun
             "ao" -> InflectionType.Adverb
             "so" -> InflectionType.Verb
             "fn" -> InflectionType.Gender

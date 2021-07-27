@@ -12,33 +12,20 @@ import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.models.imagegeneration.InflectedForm
 import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
+import sillock.icelandicdiscordbot.processors.InflectionProcessor
 import java.awt.image.BufferedImage
 
 @Component
 class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
-                             private val wordTypeMapper: WordTypeMapper,
-                             private val inflectionalMapperFactory: InflectionalMapperFactory,
-                             private val imageCreatorFactory: ImageCreatorFactory
-): MessageComponentCreateListener {
+                             private val inflectionProcessor: InflectionProcessor): MessageComponentCreateListener {
+
     override fun onComponentCreate(event: MessageComponentCreateEvent?) {
-        val inflectedList: MutableList<InflectedForm> = mutableListOf()
-
         val response = dmiiCoreService.getDeclensionsByGuid(event!!.messageComponentInteraction.customId)
-        val word = response[0]
-        val wordType = wordTypeMapper.map(word.ofl) ?: return
-        val inflectionalMapper = inflectionalMapperFactory.create(wordType)
-        val imageCreator = imageCreatorFactory.create(wordType)
 
-        word.bmyndir.forEach {
-                x ->
-            val res = inflectionalMapper.map(x.g, x.b)
-            if(res != null) inflectedList.add(res)
-        }
-        val image = imageCreator.create(word.ord, word.kyn, inflectedList)
-
-        event.interaction.createImmediateResponder().setContent("Here's your word!").respond()
+        event.interaction.createImmediateResponder().setContent("Result:").respond()
         val messageBuilder = MessageBuilder()
-
-        messageBuilder.addAttachment(image, "decline.png").send(event.interaction.channel.get())
+        val image = inflectionProcessor.process(response)
+        if(image != null)
+            messageBuilder.addAttachment(image, "inflect.png").send(event.interaction.channel.get())
     }
 }
