@@ -1,6 +1,8 @@
 package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
+import sillock.icelandicdiscordbot.models.enums.InflectionType
+import sillock.icelandicdiscordbot.models.imagegeneration.InflectedForm
 import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import java.awt.Color
 import java.awt.Font
@@ -10,7 +12,9 @@ import java.awt.image.BufferedImage
 import kotlin.math.roundToInt
 
 @Component
-class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCreator){
+class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCreator) : IImageCreator{
+    override val inflectionType: InflectionType
+        get() = InflectionType.Article
 
     /*
         @param g2d The graphics canvas for drawing
@@ -23,7 +27,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         @param contentList A Triplet object list that contains each row's data to print
                            grammatical case, the article form of the noun, and the non-article form of the noun
      */
-    fun populateTable(g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: MutableList<MutableList<String>>){
+    override fun populateTable(g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: MutableList<MutableList<String>>){
 
         g2d.color = Color.BLACK
         g2d.font= Font("Segoe UI", Font.BOLD, 18)
@@ -45,12 +49,12 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         }
     }
 
-    fun create(title: String, subTitle: String, nounDeclensionFormList: List<NounDeclensionForm>): BufferedImage {
+    override fun create(title: String, subTitle: String, inflectionalFormList: List<InflectedForm>): BufferedImage {
         var width = 500
         val height = 700
         val backgroundColor = Color(44, 47, 51) //Discord embed colour
 
-        val grouped = nounDeclensionFormList.groupBy { it.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it.grammaticalForm } }
+        val grouped = inflectionalFormList.groupBy { it.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it.grammaticalForm } }
         width = (width * grouped.size)
 
         var tableXOffset = 60
@@ -65,12 +69,10 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
 
         val subHeadingList = listOf("No Article", "With article")
 
-
-
         for(grammaticalNum in grouped){
             val imageDataList : MutableList<MutableList<String>> = mutableListOf()
             for(grammaticalForm in grammaticalNum.value){
-                var rowData : MutableList<String> = mutableListOf()
+                val rowData : MutableList<String> = mutableListOf()
                 val nounDeclensionForms = grammaticalForm.value
                 rowData.add(grammaticalForm.key.toString())
                 rowData.add(nounDeclensionForms.getOrNull(0)?.inflectedString ?: "Undefined")

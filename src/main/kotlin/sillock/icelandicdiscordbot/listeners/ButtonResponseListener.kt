@@ -6,33 +6,39 @@ import org.javacord.api.listener.interaction.MessageComponentCreateListener
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.creators.imagecreators.NounDeclensionImageCreator
+import sillock.icelandicdiscordbot.factories.ImageCreatorFactory
+import sillock.icelandicdiscordbot.factories.InflectionalMapperFactory
 import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
+import sillock.icelandicdiscordbot.mappers.WordTypeMapper
+import sillock.icelandicdiscordbot.models.imagegeneration.InflectedForm
 import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import java.awt.image.BufferedImage
 
 @Component
 class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
-                             private val nounDeclensionMapper: NounDeclensionMapper,
-                             private val nounDeclensionImageCreator: NounDeclensionImageCreator
+                             private val wordTypeMapper: WordTypeMapper,
+                             private val inflectionalMapperFactory: InflectionalMapperFactory,
+                             private val imageCreatorFactory: ImageCreatorFactory
 ): MessageComponentCreateListener {
     override fun onComponentCreate(event: MessageComponentCreateEvent?) {
-        val response = dmiiCoreService.getDeclensionsByGuid(event!!.messageComponentInteraction.customId)
+        val inflectedList: MutableList<InflectedForm> = mutableListOf()
 
-        val declinedList: MutableList<NounDeclensionForm> = mutableListOf()
-        val imageList: MutableList<BufferedImage> = mutableListOf()
-        for (word in response) {
-            word.bmyndir.forEach {
-                    x ->
-                val res = nounDeclensionMapper.map(x.g, x.b)
-                if(res != null) declinedList.add(res)
-            }
-            imageList.add(nounDeclensionImageCreator.create(word.ord, word.kyn, declinedList))
+        val response = dmiiCoreService.getDeclensionsByGuid(event!!.messageComponentInteraction.customId)
+        val word = response[0]
+        val wordType = wordTypeMapper.map(word.ofl) ?: return
+        val inflectionalMapper = inflectionalMapperFactory.create(wordType)
+        val imageCreator = imageCreatorFactory.create(wordType)
+
+        word.bmyndir.forEach {
+                x ->
+            val res = inflectionalMapper.map(x.g, x.b)
+            if(res != null) inflectedList.add(res)
         }
+        val image = imageCreator.create(word.ord, word.kyn, inflectedList)
+
         event.interaction.createImmediateResponder().setContent("Here's your word!").respond()
         val messageBuilder = MessageBuilder()
 
-        for(image in imageList) {
-            messageBuilder.addAttachment(image, "decline.png").send(event.interaction.channel.get())
-        }
+        messageBuilder.addAttachment(image, "decline.png").send(event.interaction.channel.get())
     }
 }
