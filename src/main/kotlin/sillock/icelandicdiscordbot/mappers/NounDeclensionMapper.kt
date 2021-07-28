@@ -1,13 +1,15 @@
 package sillock.icelandicdiscordbot.mappers
 
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
+import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
+import sillock.icelandicdiscordbot.models.enums.InflectionType
 
 @Component
-class NounDeclensionMapper: IInflectionalMapper {
-
+class NounDeclensionMapper : IInflectionalMapper {
+    override val inflectionType: InflectionType
+        get() = InflectionType.Article
     override fun map(grammaticalForm: String, inflectedWord: String) : NounDeclensionForm?{
         return when (grammaticalForm){
             "NFET"    -> {NounDeclensionForm(inflectedWord, GrammaticalNumber.Singular, GrammaticalForm.Nominative, false)}

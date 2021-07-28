@@ -4,7 +4,6 @@ package sillock.icelandicdiscordbot.services
 import org.javacord.api.listener.GloballyAttachableListener
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.creators.DiscordApiCreator
-import sillock.icelandicdiscordbot.models.commands.ICommand
 import javax.annotation.PostConstruct
 
 @Component

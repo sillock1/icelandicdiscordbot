@@ -1,10 +1,11 @@
-package sillock.icelandicdiscordbot.models.commands
+package sillock.icelandicdiscordbot.commands
 
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
+import java.util.*
 
 @Component
 class HeadwordCommand (private val dmiiCoreService: DmiiCoreService) : ICommand {
@@ -17,7 +18,7 @@ class HeadwordCommand (private val dmiiCoreService: DmiiCoreService) : ICommand 
 
     override fun execute(event: SlashCommandInteraction) {
         val wordParam = event.firstOptionStringValue
-        val response = dmiiCoreService.getHeadword(wordParam.get())
+        val response = dmiiCoreService.getHeadword(wordParam.get().lowercase(Locale.getDefault()))
 
         //val embed = nounEmbedCreator.create()
 

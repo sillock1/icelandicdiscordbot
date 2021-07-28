@@ -11,7 +11,7 @@ class SlashCommandListener(
 ) : SlashCommandCreateListener {
 
     override fun onSlashCommandCreate(event: SlashCommandCreateEvent?) {
-        var command = commandFactory.getCommandByName(event!!.slashCommandInteraction.commandName)
+        val command = commandFactory.getCommandByName(event!!.slashCommandInteraction.commandName)
         command?.execute(event.slashCommandInteraction)
     }
 }

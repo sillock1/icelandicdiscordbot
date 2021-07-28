@@ -1,4 +1,4 @@
-package sillock.icelandicdiscordbot.models.commands
+package sillock.icelandicdiscordbot.commands
 
 import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.interaction.SlashCommandInteraction
@@ -8,16 +8,22 @@ import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.creators.imagecreators.NounDeclensionImageCreator
+import sillock.icelandicdiscordbot.factories.ImageCreatorFactory
+import sillock.icelandicdiscordbot.factories.InflectionalMapperFactory
 import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
-import sillock.icelandicdiscordbot.models.embedmodels.NounDeclensionForm
+import sillock.icelandicdiscordbot.mappers.NounGenderMapper
+import sillock.icelandicdiscordbot.mappers.WordTypeMapper
+import sillock.icelandicdiscordbot.models.imagegeneration.InflectedForm
+import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
+import sillock.icelandicdiscordbot.processors.InflectionProcessor
 import java.awt.image.BufferedImage
+import java.util.*
 
 @Component
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
-                     private val nounDeclensionMapper: NounDeclensionMapper,
-                     private val nounDeclensionImageCreator: NounDeclensionImageCreator,
-                     private val dmiiDuplicateWordProcessor: DmiiDuplicateWordProcessor) : ICommand {
+                     private val dmiiDuplicateWordProcessor: DmiiDuplicateWordProcessor,
+                     private val inflectionProcessor: InflectionProcessor) : ICommand {
 
     override val name: String
         get() = "decline"
@@ -31,7 +37,6 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
                         "Type of word to search by",
                  true,
                     listOf(
-                                SlashCommandOptionChoice.create("The Reflexive Pronoun (Afturbeygt fornafn)", "afn"),
                                 SlashCommandOptionChoice.create("Adverb (Atviksorð)", "ao"),
                                 SlashCommandOptionChoice.create("Other Pronouns (Önnur fornöfn)", "fn"),
                                 SlashCommandOptionChoice.create("The Definite Article (Greinir)", "gr"),
@@ -46,33 +51,17 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
     override fun execute(event: SlashCommandInteraction) {
         val wordTypeParam = event.firstOptionStringValue
         val wordParam = event.secondOptionStringValue
-        val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get())
+        val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get().lowercase(Locale.getDefault())
+        )
 
         if(response.count() != 1){
             dmiiDuplicateWordProcessor.response(event, response)
             return
         }
-
-        val word = response.first()
-        val declinedList: MutableList<NounDeclensionForm> = mutableListOf()
-        val imageList: MutableList<BufferedImage> = mutableListOf()
-        var gender: String = ""
-        word.bmyndir.forEach {x ->
-            val res = nounDeclensionMapper.map(x.g, x.b)
-            if(res != null) declinedList.add(res)
-        }
-        if(word.kyn == "kvk") gender = "kvenkynsnafnorð (Female noun)"
-        if(word.kyn == "hk") gender = "hvorugkynsnafnorð (Neuter noun)"
-        if(word.kyn == "kk") gender = "karlkynsnafnorð (Male noun)"
-        imageList.add(nounDeclensionImageCreator.create(gender, declinedList))
-
-
+        event.createImmediateResponder().setContent("Result:").respond()
         val messageBuilder = MessageBuilder()
-
-        event.createImmediateResponder().setContent("Here ya go!").respond()
-        for(image in imageList) {
-            messageBuilder.addAttachment(image, "decline.png").send(event.channel.get())
-        }
-
+        val image = inflectionProcessor.process(response)
+        if(image != null)
+            messageBuilder.addAttachment(image, "inflect.png").send(event.channel.get())
     }
 }
