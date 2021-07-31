@@ -5,7 +5,7 @@ import org.javacord.api.entity.message.component.ActionRow
 import org.javacord.api.entity.message.component.Button
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.models.Word
+import sillock.icelandicdiscordbot.models.serialisations.Word
 
 @Component
 class DmiiDuplicateWordProcessor {

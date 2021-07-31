@@ -1,21 +1,14 @@
 package sillock.icelandicdiscordbot.services
 
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import sillock.icelandicdiscordbot.configuration.ApiProperties
 import sillock.icelandicdiscordbot.helpers.HttpResponseHandler
-import sillock.icelandicdiscordbot.models.Word
+import sillock.icelandicdiscordbot.models.serialisations.Word
 
 @Service
 class DmiiCoreService (private val apiProperties: ApiProperties){

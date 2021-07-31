@@ -7,18 +7,8 @@ import org.javacord.api.interaction.SlashCommandOptionChoice
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
-import sillock.icelandicdiscordbot.creators.imagecreators.NounDeclensionImageCreator
-import sillock.icelandicdiscordbot.factories.ImageCreatorFactory
-import sillock.icelandicdiscordbot.factories.InflectionalMapperFactory
-import sillock.icelandicdiscordbot.mappers.NounDeclensionMapper
-import sillock.icelandicdiscordbot.mappers.NounGenderMapper
-import sillock.icelandicdiscordbot.mappers.WordTypeMapper
-import sillock.icelandicdiscordbot.models.imagegeneration.InflectedForm
-import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import sillock.icelandicdiscordbot.processors.InflectionProcessor
-import java.awt.image.BufferedImage
-import java.util.*
 
 @Component
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
@@ -51,8 +41,7 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
     override fun execute(event: SlashCommandInteraction) {
         val wordTypeParam = event.firstOptionStringValue
         val wordParam = event.secondOptionStringValue
-        val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get().lowercase(Locale.getDefault())
-        )
+        val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get())
 
         if(response.count() != 1){
             dmiiDuplicateWordProcessor.response(event, response)

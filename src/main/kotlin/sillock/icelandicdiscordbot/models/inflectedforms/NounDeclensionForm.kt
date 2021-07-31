@@ -1,4 +1,4 @@
-package sillock.icelandicdiscordbot.models.imagegeneration
+package sillock.icelandicdiscordbot.models.inflectedforms
 
 import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber

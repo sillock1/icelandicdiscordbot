@@ -18,7 +18,7 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService): ICommand {
 
     override fun execute(event: SlashCommandInteraction) {
         val wordParam = event.firstOptionStringValue
-        val response = dmiiCoreService.getVerbConjugation(wordParam.get().lowercase(Locale.getDefault()))
+        val response = dmiiCoreService.getVerbConjugation(wordParam.get())
         event.channel.get().sendMessage(response.toString())
     }
 }

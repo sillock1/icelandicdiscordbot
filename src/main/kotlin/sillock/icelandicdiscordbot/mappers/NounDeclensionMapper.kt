@@ -1,7 +1,7 @@
 package sillock.icelandicdiscordbot.mappers
 
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.models.imagegeneration.NounDeclensionForm
+import sillock.icelandicdiscordbot.models.inflectedforms.NounDeclensionForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 import sillock.icelandicdiscordbot.models.enums.InflectionType
