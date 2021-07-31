@@ -19,7 +19,7 @@ class TablePopulator {
     @param contentList A Triplet object list that contains each row's data to print
                        grammatical case, the article form of the noun, and the non-article form of the noun
  */
-    fun populateTable(g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, subHeadingList: List<String>, contentList: MutableList<MutableList<String>>) : Graphics2D{
+    fun populateTable(g2d: Graphics2D, offsetX: Int, offsetY: Int, rowSpacing: Int, columnSpacing: Int, tableHeader: String, contentList: MutableList<MutableList<String>>) : Graphics2D{
 
         g2d.color = Color.BLACK
         g2d.font= Font("Segoe UI", Font.BOLD, 18)

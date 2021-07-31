@@ -2,8 +2,6 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
-import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
-import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 import sillock.icelandicdiscordbot.models.enums.InflectionType
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
@@ -13,18 +11,19 @@ import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 
 @Component
-class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
+class PersonalPronounImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                            private val tablePopulator: TablePopulator,
-                           private val wordTypeMapper: WordTypeMapper): IImageCreator {
+                           private val wordTypeMapper: WordTypeMapper
+): IImageCreator {
     override val inflectionType: InflectionType
-        get() = InflectionType.Gender
+        get() = InflectionType.PersonalPronoun
 
     override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
-        var width = 650
+        var width = 18
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
-        val grouped = inflectionalFormList.groupBy { it?.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it?.grammaticalForm } }
+        val grouped = inflectionalFormList.groupBy { it?.grammaticalForm }
         width = (width * grouped.size)
 
         var tableXOffset = 60
@@ -37,23 +36,18 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
         g2d.color = backgroundColor
         g2d.fillRect(0,0, width, height)
 
-        val subHeadingList = mutableListOf("Form", "Male", "Female", "Neuter")
-        for(grammaticalNum in grouped){
-            val imageDataList : MutableList<MutableList<String>> = mutableListOf()
-            imageDataList.add(subHeadingList)
-            for(grammaticalForm in grammaticalNum.value){
-                val rowData : MutableList<String> = mutableListOf()
-                val genderedForms = grammaticalForm.value
-                rowData.add(grammaticalForm.key.toString().substring(0, 3) + ".")
-                rowData.add(genderedForms.getOrNull(0)?.inflectedString ?: "Undefined")
-                rowData.add(genderedForms.getOrNull(1)?.inflectedString ?: "Undefined")
-                rowData.add(genderedForms.getOrNull(2)?.inflectedString ?: "Undefined")
-                imageDataList.add(rowData)
-            }
-            tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 500, 70)
-            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 60, grammaticalNum.key.toString(),  imageDataList)
-            tableXOffset+=630
+        val subHeadingList = mutableListOf("Form", "Singular", "Plural")
+        val imageDataList : MutableList<MutableList<String>> = mutableListOf()
+        imageDataList.add(subHeadingList)
+        for(grammaticalForm in grouped){
+            val rowData : MutableList<String> = mutableListOf()
+            rowData.add(grammaticalForm.key.toString().substring(0, 3) + ".")
+            rowData.add(grammaticalForm.value.getOrNull(0)?.inflectedString ?: "Undefined")
+            rowData.add(grammaticalForm.value.getOrNull(1)?.inflectedString ?: "Undefined")
+            imageDataList.add(rowData)
         }
+        tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 500, 70)
+        tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 80, "Personal Pronoun Table",  imageDataList)
 
         g2d.color = Color.WHITE
         g2d.font= Font("Segoe UI", Font.BOLD, 64)

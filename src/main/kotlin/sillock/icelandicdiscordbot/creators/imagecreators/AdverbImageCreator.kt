@@ -40,11 +40,10 @@ class AdverbImageCreator(private val tableDrawingCreator: TableDrawingCreator,
             imageDataList.add(subHeadingList)
             for(form in inflectionalFormList){
                 rowData.add(form?.inflectedString ?: "Undefined")
-
             }
         imageDataList.add(rowData)
             tableDrawingCreator.drawTable(g2d, 2, tableXOffset, 260, 450, 70)
-            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 80, "Adverb table",  subHeadingList, imageDataList)
+            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 80, "Adverb table",  imageDataList)
             tableXOffset+=630
 
 

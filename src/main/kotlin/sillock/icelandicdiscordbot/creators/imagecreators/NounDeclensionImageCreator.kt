@@ -52,7 +52,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
                 imageDataList.add(rowData)
             }
             tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 400, 70)
-            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 60, grammaticalNum.key.toString(),  subHeadingList, imageDataList)
+            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 60, grammaticalNum.key.toString(), imageDataList)
             tableXOffset+=480
         }
 
