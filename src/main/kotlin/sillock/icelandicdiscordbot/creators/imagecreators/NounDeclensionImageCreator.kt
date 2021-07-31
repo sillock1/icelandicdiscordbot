@@ -20,12 +20,12 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
     override val inflectionType: InflectionType
         get() = InflectionType.Article
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm>): BufferedImage {
+    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
         var width = 500
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
-        val grouped = inflectionalFormList.groupBy { it.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it.grammaticalForm } }
+        val grouped = inflectionalFormList.groupBy { it?.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it?.grammaticalForm } }
         width = (width * grouped.size)
 
         var tableXOffset = 60
@@ -33,7 +33,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
         val g2d = bufferedImage.createGraphics()
 
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
         g2d.color = backgroundColor
         g2d.fillRect(0,0, width, height)

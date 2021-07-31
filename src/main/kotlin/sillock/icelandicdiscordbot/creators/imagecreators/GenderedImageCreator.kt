@@ -2,6 +2,8 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
+import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
+import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 import sillock.icelandicdiscordbot.models.enums.InflectionType
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
@@ -17,12 +19,12 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
     override val inflectionType: InflectionType
         get() = InflectionType.Gender
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm>): BufferedImage {
+    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
         var width = 650
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
-        val grouped = inflectionalFormList.groupBy { it.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it.grammaticalForm } }
+        val grouped = inflectionalFormList.groupBy { it?.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it?.grammaticalForm } }
         width = (width * grouped.size)
 
         var tableXOffset = 60
@@ -30,7 +32,7 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
         val g2d = bufferedImage.createGraphics()
 
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
         g2d.color = backgroundColor
         g2d.fillRect(0,0, width, height)

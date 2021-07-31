@@ -8,5 +8,5 @@ import java.awt.image.BufferedImage
 
 interface IImageCreator {
     val inflectionType: InflectionType
-    fun create(word: Word, inflectionalFormList: List<InflectedForm>): BufferedImage
+    fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage
 }

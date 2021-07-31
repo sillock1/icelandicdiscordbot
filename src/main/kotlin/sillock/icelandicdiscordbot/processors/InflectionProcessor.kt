@@ -13,15 +13,16 @@ class InflectionProcessor (private val inflectionalMapperFactory: InflectionalMa
                            private val imageCreatorFactory: ImageCreatorFactory,
                            private val inflectionTypeMapper: InflectionTypeMapper){
     fun process(wordList: List<Word>) : BufferedImage?{
-        val inflectedList: MutableList<InflectedForm> = mutableListOf()
         val word = wordList.first()
         val wordType = inflectionTypeMapper.map(word.ofl) ?: return null
         val inflectionalMapper = inflectionalMapperFactory.create(wordType)
         val imageCreator = imageCreatorFactory.create(wordType)
+        val pairList = mutableListOf<Pair<String, String>>()
         word.bmyndir.forEach {x ->
-            val res = inflectionalMapper.map(x.g, x.b)
-            if(res != null) inflectedList.add(res)
+            val pair: Pair<String, String> = Pair(x.g, x.b)
+            pairList.add(pair)
         }
-        return imageCreator.create(word, inflectedList)
+        val sortedForms = inflectionalMapper.map(pairList)
+        return imageCreator.create(word, sortedForms)
     }
 }

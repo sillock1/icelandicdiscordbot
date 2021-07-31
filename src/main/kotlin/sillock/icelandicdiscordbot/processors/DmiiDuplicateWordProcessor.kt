@@ -11,7 +11,7 @@ import sillock.icelandicdiscordbot.models.serialisations.Word
 class DmiiDuplicateWordProcessor {
     fun response(event: SlashCommandInteraction, response: List<Word>){
         event.createImmediateResponder().setContent("Sorry I couldn't find the exact word you were looking for...").respond()
-        var msgBuilder = MessageBuilder().setContent("Here's what I could find")
+        val msgBuilder = MessageBuilder().setContent("Here's what I could find")
         for(word in response){
             msgBuilder.addComponents(
                 ActionRow.of(
