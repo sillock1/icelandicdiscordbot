@@ -1,9 +1,9 @@
-package sillock.icelandicdiscordbot.models.imagegeneration
+package sillock.icelandicdiscordbot.models.inflectedforms
 
 import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 
 data class NounDeclensionForm(override var inflectedString: String,
-                         override var grammaticalNumber: GrammaticalNumber,
-                         override var grammaticalForm: GrammaticalForm,
+                         override var grammaticalNumber: GrammaticalNumber?,
+                         override var grammaticalForm: GrammaticalForm?,
                          var withArticle: Boolean): InflectedForm(inflectedString, grammaticalNumber, grammaticalForm)

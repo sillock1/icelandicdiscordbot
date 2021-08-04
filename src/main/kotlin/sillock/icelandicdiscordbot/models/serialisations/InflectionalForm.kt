@@ -1,4 +1,4 @@
-package sillock.icelandicdiscordbot.models
+package sillock.icelandicdiscordbot.models.serialisations
 
 import kotlinx.serialization.Serializable
 

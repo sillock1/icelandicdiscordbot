@@ -6,9 +6,7 @@ import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.factories.CommandFactory
 
 @Component
-class SlashCommandListener(
-    private val commandFactory: CommandFactory
-) : SlashCommandCreateListener {
+class SlashCommandListener(private val commandFactory: CommandFactory) : SlashCommandCreateListener {
 
     override fun onSlashCommandCreate(event: SlashCommandCreateEvent?) {
         val command = commandFactory.getCommandByName(event!!.slashCommandInteraction.commandName)

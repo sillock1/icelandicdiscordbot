@@ -18,7 +18,7 @@ class HeadwordCommand (private val dmiiCoreService: DmiiCoreService) : ICommand 
 
     override fun execute(event: SlashCommandInteraction) {
         val wordParam = event.firstOptionStringValue
-        val response = dmiiCoreService.getHeadword(wordParam.get().lowercase(Locale.getDefault()))
+        val response = dmiiCoreService.getHeadword(wordParam.get())
 
         //val embed = nounEmbedCreator.create()
 
