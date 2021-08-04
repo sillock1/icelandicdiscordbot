@@ -35,6 +35,9 @@ class TablePopulator {
             offsetXSpacing = 10
             offsetYSpacing+=rowSpacing
         }
+
+
+
         return g2d
     }
 }

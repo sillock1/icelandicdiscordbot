@@ -12,6 +12,7 @@ class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
                              private val inflectionProcessor: InflectionProcessor): MessageComponentCreateListener {
 
     override fun onComponentCreate(event: MessageComponentCreateEvent?) {
+
         val response = dmiiCoreService.getDeclensionsByGuid(event!!.messageComponentInteraction.customId)
 
         event.interaction.createImmediateResponder().setContent("Result:").respond()

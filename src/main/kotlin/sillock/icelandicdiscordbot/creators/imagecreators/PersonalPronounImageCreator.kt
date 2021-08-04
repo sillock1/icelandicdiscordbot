@@ -19,7 +19,7 @@ class PersonalPronounImageCreator(private val tableDrawingCreator: TableDrawingC
         get() = InflectionType.PersonalPronoun
 
     override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
-        var width = 18
+        var width = 200
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
