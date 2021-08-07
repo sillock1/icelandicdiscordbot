@@ -5,6 +5,7 @@ import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
 import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 import sillock.icelandicdiscordbot.models.enums.InflectionType
+import sillock.icelandicdiscordbot.models.inflectedforms.GenderedForm
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import java.awt.Color
@@ -15,12 +16,12 @@ import java.awt.image.BufferedImage
 @Component
 class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                            private val tablePopulator: TablePopulator,
-                           private val wordTypeMapper: WordTypeMapper): IImageCreator {
+                           private val wordTypeMapper: WordTypeMapper): IImageCreator<InflectedForm> {
     override val inflectionType: InflectionType
         get() = InflectionType.Gender
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
-        var width = 650
+    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
+        var width = 700
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
@@ -50,8 +51,8 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                 rowData.add(genderedForms.getOrNull(2)?.inflectedString ?: "Undefined")
                 imageDataList.add(rowData)
             }
-            tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 500, 70)
-            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 60, grammaticalNum.key.toString(),  imageDataList)
+            tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 600, 70)
+            tablePopulator.populateTable(g2d, tableXOffset, 260, 28, 70, 50, grammaticalNum.key.toString(),  imageDataList)
             tableXOffset+=630
         }
 
@@ -68,6 +69,6 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
 
         g2d.dispose()
 
-        return bufferedImage
+        return listOf(bufferedImage)
     }
 }

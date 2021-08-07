@@ -5,5 +5,6 @@ enum class InflectionType {
     Gender,
     Verb,
     PersonalPronoun,
-    Adverb
+    Adverb,
+    Adjective
 }

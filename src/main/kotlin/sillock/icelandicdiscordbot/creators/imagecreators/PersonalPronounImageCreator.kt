@@ -3,6 +3,7 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.models.enums.InflectionType
+import sillock.icelandicdiscordbot.models.inflectedforms.GenderedForm
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import java.awt.Color
@@ -14,11 +15,11 @@ import java.awt.image.BufferedImage
 class PersonalPronounImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                            private val tablePopulator: TablePopulator,
                            private val wordTypeMapper: WordTypeMapper
-): IImageCreator {
+): IImageCreator<InflectedForm> {
     override val inflectionType: InflectionType
         get() = InflectionType.PersonalPronoun
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
+    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
         var width = 200
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
@@ -47,7 +48,7 @@ class PersonalPronounImageCreator(private val tableDrawingCreator: TableDrawingC
             imageDataList.add(rowData)
         }
         tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 500, 70)
-        tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 80, "Personal Pronoun Table",  imageDataList)
+        tablePopulator.populateTable(g2d, tableXOffset, 260, 24, 70, 60, "Personal Pronoun Table",  imageDataList)
 
         g2d.color = Color.WHITE
         g2d.font= Font("Segoe UI", Font.BOLD, 64)
@@ -62,6 +63,6 @@ class PersonalPronounImageCreator(private val tableDrawingCreator: TableDrawingC
 
         g2d.dispose()
 
-        return bufferedImage
+        return listOf(bufferedImage)
     }
 }

@@ -13,7 +13,7 @@ class InflectionTypeMapper {
             "so" -> InflectionType.Verb
             "fn" -> InflectionType.Gender
             "gr" -> InflectionType.Gender
-            "lo" -> InflectionType.Gender
+            "lo" -> InflectionType.Adjective
             "rt" -> InflectionType.Gender
             "to" -> InflectionType.Gender
             else -> null

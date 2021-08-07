@@ -49,8 +49,9 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
         }
         event.createImmediateResponder().setContent("Result:").respond()
         val messageBuilder = MessageBuilder()
-        val image = inflectionProcessor.process(response)
-        if(image != null)
-            messageBuilder.addAttachment(image, "inflect.png").send(event.channel.get())
+        val images = inflectionProcessor.process(response)
+        images.forEach{
+            x -> messageBuilder.addAttachment(x, "inflect.png").send(event.channel.get())
+        }
     }
 }

@@ -12,9 +12,9 @@ import java.awt.image.BufferedImage
 class InflectionProcessor (private val inflectionalMapperFactory: InflectionalMapperFactory,
                            private val imageCreatorFactory: ImageCreatorFactory,
                            private val inflectionTypeMapper: InflectionTypeMapper){
-    fun process(wordList: List<Word>) : BufferedImage?{
+    fun process(wordList: List<Word>) : List<BufferedImage?>{
         val word = wordList.first()
-        val wordType = inflectionTypeMapper.map(word.ofl) ?: return null
+        val wordType = inflectionTypeMapper.map(word.ofl) ?: return listOf()
         val inflectionalMapper = inflectionalMapperFactory.create(wordType)
         val imageCreator = imageCreatorFactory.create(wordType)
         val pairList = mutableListOf<Pair<String, String>>()
