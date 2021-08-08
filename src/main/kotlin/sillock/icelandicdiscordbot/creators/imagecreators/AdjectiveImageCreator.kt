@@ -8,42 +8,43 @@ import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import java.awt.Color
 import java.awt.Font
+import java.awt.Image
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
 
 @Component
 class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                            private val tablePopulator: TablePopulator,
-                           private val wordTypeMapper: WordTypeMapper
+                           private val wordTypeMapper: WordTypeMapper,
+                            private val genderedImageCreator: GenderedImageCreator
 ): IImageCreator<InflectedForm> {
     override val inflectionType: InflectionType
         get() = InflectionType.Adjective
 
     override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
-        var width = 500
-        val height = 1600
+        var width = 450
+        var height = 800
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
         val grouped = (inflectionalFormList as List<AdjectiveForm>).groupBy{ it.degree }.mapValues { (_, v) ->
             v.groupBy { it.strength }.mapValues { (_, v) ->
                 v.groupBy { it.grammaticalNumber }.mapValues { (_, v) ->
                     v.groupBy { it.grammaticalForm } } } }
-        width = (width * grouped.size)
-
-        //TODO: Need to fix duplicate images being generated
 
         var bufferedImageList: MutableList<BufferedImage> = mutableListOf()
-
         for(degree in grouped){
             var tableXOffset = 60
             var tableYOffset = 360
-            var bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+            val imageWidth = (width * grouped.size)
+            val imageHeight = (height * degree.value.size)
+            var bufferedImage = BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB)
             var g2d = bufferedImage.createGraphics()
-
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
             g2d.color = backgroundColor
-            g2d.fillRect(0,0, width, height)
+            g2d.fillRect(0,0, imageWidth, imageHeight)
 
             val subHeadingList = mutableListOf("Form", "Male", "Female", "Neuter")
 
@@ -74,7 +75,7 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
                     imageDataList.add(subHeadingList)
                 }
                 tableXOffset = 60
-                tableYOffset += 650
+                tableYOffset += 550
             }
             g2d.color = Color.WHITE
             g2d.font= Font("Segoe UI", Font.BOLD, 64)
@@ -85,8 +86,8 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
             g2d.font= Font("Segoe UI", Font.BOLD, 64)
             g2d.color = Color.ORANGE
             g2d.drawString(wordType, 300, 100)
-            bufferedImageList.add(bufferedImage)
             g2d.dispose()
+            bufferedImageList.add(bufferedImage)
         }
         return bufferedImageList
     }
