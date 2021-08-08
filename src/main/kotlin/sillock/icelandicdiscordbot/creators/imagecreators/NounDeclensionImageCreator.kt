@@ -6,6 +6,7 @@ import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import sillock.icelandicdiscordbot.models.enums.InflectionType
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
+import sillock.icelandicdiscordbot.models.inflectedforms.NounDeclensionForm
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
@@ -16,12 +17,12 @@ import kotlin.math.roundToInt
 @Component
 class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                                  private val nounGenderMapper: NounGenderMapper,
-                                 private val tablePopulator: TablePopulator) : IImageCreator{
+                                 private val tablePopulator: TablePopulator) : IImageCreator<InflectedForm>{
     override val inflectionType: InflectionType
         get() = InflectionType.Article
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
-        var width = 500
+    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
+        var width = 550
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
@@ -51,9 +52,9 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
                 rowData.add(nounDeclensionForms.getOrNull(1)?.inflectedString ?: "Undefined")
                 imageDataList.add(rowData)
             }
-            tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 400, 70)
-            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 60, grammaticalNum.key.toString(), imageDataList)
-            tableXOffset+=480
+            tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 500, 70)
+            tablePopulator.populateTable(g2d, tableXOffset, 260, 24, 70, 50, grammaticalNum.key.toString(), imageDataList)
+            tableXOffset+=520
         }
 
         g2d.color = Color.WHITE
@@ -64,9 +65,8 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         g2d.color = Color.ORANGE
         g2d.drawString(gender, 60, 220)
 
-
         g2d.dispose()
 
-        return bufferedImage
+        return listOf(bufferedImage)
     }
 }

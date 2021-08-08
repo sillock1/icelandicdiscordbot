@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import sillock.icelandicdiscordbot.processors.InflectionProcessor
+import java.io.File
+import javax.imageio.ImageIO
 
 @Component
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
@@ -49,8 +51,12 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
         }
         event.createImmediateResponder().setContent("Result:").respond()
         val messageBuilder = MessageBuilder()
-        val image = inflectionProcessor.process(response)
-        if(image != null)
-            messageBuilder.addAttachment(image, "inflect.png").send(event.channel.get())
+        val images = inflectionProcessor.process(response)
+        var i = 0
+        for(image in images.reversed()) {
+            messageBuilder.addAttachment(image, "inflected${image.hashCode()}.png")
+            i+=1
+        }
+        messageBuilder.send(event.channel.get())
     }
 }

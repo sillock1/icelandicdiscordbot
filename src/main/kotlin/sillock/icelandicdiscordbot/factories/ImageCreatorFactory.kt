@@ -1,12 +1,14 @@
 package sillock.icelandicdiscordbot.factories
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.creators.imagecreators.IImageCreator
 import sillock.icelandicdiscordbot.models.enums.InflectionType
+import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 
 @Component
-class ImageCreatorFactory(private val imageCreators: List<IImageCreator>) {
-    fun create(inflectionType: InflectionType) : IImageCreator{
+class ImageCreatorFactory(private val imageCreators: List<IImageCreator<InflectedForm>>) {
+    fun create(inflectionType: InflectionType) : IImageCreator<InflectedForm>{
         return imageCreators.first { x -> x.inflectionType == inflectionType }
     }
 }

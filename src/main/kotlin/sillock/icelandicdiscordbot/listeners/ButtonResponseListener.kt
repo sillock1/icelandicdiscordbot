@@ -17,8 +17,9 @@ class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
 
         event.interaction.createImmediateResponder().setContent("Result:").respond()
         val messageBuilder = MessageBuilder()
-        val image = inflectionProcessor.process(response)
-        if(image != null)
-            messageBuilder.addAttachment(image, "inflect.png").send(event.interaction.channel.get())
+        val imageList = inflectionProcessor.process(response)
+        imageList.forEach{
+            x ->  messageBuilder.addAttachment(x, "inflect.png").send(event.interaction.channel.get())
+        }
     }
 }

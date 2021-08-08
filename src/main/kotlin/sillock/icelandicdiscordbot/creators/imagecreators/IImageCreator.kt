@@ -6,7 +6,7 @@ import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
-interface IImageCreator {
+interface IImageCreator<T> {
     val inflectionType: InflectionType
-    fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage
+    fun create(word: Word, inflectionalFormList: List<T?>): List<BufferedImage>
 }

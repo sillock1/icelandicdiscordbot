@@ -3,6 +3,7 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.models.enums.InflectionType
+import sillock.icelandicdiscordbot.models.inflectedforms.GenderedForm
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import java.awt.Color
@@ -13,11 +14,11 @@ import java.awt.image.BufferedImage
 @Component
 class AdverbImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                          private val tablePopulator: TablePopulator,
-                         private val wordTypeMapper: WordTypeMapper): IImageCreator {
+                         private val wordTypeMapper: WordTypeMapper): IImageCreator<InflectedForm> {
     override val inflectionType: InflectionType
         get() = InflectionType.Adverb
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): BufferedImage {
+    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
         var width = 200
         val height = 500
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
@@ -42,8 +43,8 @@ class AdverbImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                 rowData.add(form?.inflectedString ?: "Undefined")
             }
             imageDataList.add(rowData)
-            tableDrawingCreator.drawTable(g2d, 2, tableXOffset, 260, 450, 70)
-            tablePopulator.populateTable(g2d, tableXOffset, 260, 70, 80, "Adverb table",  imageDataList)
+            tableDrawingCreator.drawTable(g2d, 2, tableXOffset, 260, 480, 70)
+            tablePopulator.populateTable(g2d, tableXOffset, 260, 24, 70, 55, "Adverb table",  imageDataList)
             tableXOffset+=630
 
 
@@ -59,6 +60,6 @@ class AdverbImageCreator(private val tableDrawingCreator: TableDrawingCreator,
 
 
         g2d.dispose()
-        return bufferedImage
+        return listOf(bufferedImage)
     }
 }
