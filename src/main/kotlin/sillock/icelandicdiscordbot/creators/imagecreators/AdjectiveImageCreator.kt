@@ -8,11 +8,8 @@ import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import java.awt.Color
 import java.awt.Font
-import java.awt.Image
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 
 @Component
 class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator,
@@ -28,7 +25,7 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
         var height = 800
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
-        val grouped = (inflectionalFormList as List<AdjectiveForm>).groupBy{ it.degree }.mapValues { (_, v) ->
+        val grouped = (inflectionalFormList as List<AdjectiveForm>).groupBy{ it.grammaticalDegree }.mapValues { (_, v) ->
             v.groupBy { it.strength }.mapValues { (_, v) ->
                 v.groupBy { it.grammaticalNumber }.mapValues { (_, v) ->
                     v.groupBy { it.grammaticalForm } } } }

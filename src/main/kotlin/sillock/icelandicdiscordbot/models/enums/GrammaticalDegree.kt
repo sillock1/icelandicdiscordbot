@@ -1,6 +1,6 @@
 package sillock.icelandicdiscordbot.models.enums
 
-enum class Degree {
+enum class GrammaticalDegree {
     Positive,
     Comparative,
     Superlative

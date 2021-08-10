@@ -13,8 +13,8 @@ class AdjectiveMapper: IInflectionalMapper {
     override fun map(formInflectedWordPair: List<Pair<String, String>>): List<InflectedForm?> {
         val adjectiveForms = mutableListOf<AdjectiveForm?>()
 
-        var degree: Degree? = null
-        var gender: Gender? = null
+        var grammaticalDegree: GrammaticalDegree? = null
+        var grammaticalGender: GrammaticalGender? = null
         var number: GrammaticalNumber? = null
         var form: GrammaticalForm? = null
         var strength: InflectedStrength? = null
@@ -22,28 +22,28 @@ class AdjectiveMapper: IInflectionalMapper {
         formInflectedWordPair.forEach{ x ->
 
                 if (x.first.contains("FSB")){
-                    degree = Degree.Positive
+                    grammaticalDegree = GrammaticalDegree.Positive
                     strength = InflectedStrength.Strong
                 }
                 if(x.first.contains("FVB")){
-                    degree = Degree.Positive
+                    grammaticalDegree = GrammaticalDegree.Positive
                     strength = InflectedStrength.Weak
                 }
                 if(x.first.contains("MST")){
-                    degree = Degree.Comparative
+                    grammaticalDegree = GrammaticalDegree.Comparative
                     strength = InflectedStrength.Strong
                 }
                 if(x.first.contains("ESB")){
-                    degree = Degree.Superlative
+                    grammaticalDegree = GrammaticalDegree.Superlative
                     strength = InflectedStrength.Strong
                 }
                 if(x.first.contains("EVB")){
-                    degree = Degree.Superlative
+                    grammaticalDegree = GrammaticalDegree.Superlative
                     strength = InflectedStrength.Weak
                 }
-                if(x.first.contains("KK")) gender = Gender.Male
-                if(x.first.contains("KVK")) gender = Gender.Female
-                if(x.first.contains("HK")) gender = Gender.Neuter
+                if(x.first.contains("KK")) grammaticalGender = GrammaticalGender.Male
+                if(x.first.contains("KVK")) grammaticalGender = GrammaticalGender.Female
+                if(x.first.contains("HK")) grammaticalGender = GrammaticalGender.Neuter
                 if(x.first.contains("ET")) number = GrammaticalNumber.Singular
                 if(x.first.contains("FT")) number = GrammaticalNumber.Plural
                 if(x.first.contains("NF")) form = GrammaticalForm.Nominative
@@ -51,10 +51,10 @@ class AdjectiveMapper: IInflectionalMapper {
                 if(x.first.contains("ÞGF")) form = GrammaticalForm.Dative
                 if(x.first.contains("EF")) form = GrammaticalForm.Genitive
 
-            val adjectiveForm = AdjectiveForm(x.second, number, form, degree!!, strength!!, gender!!)
+            val adjectiveForm = AdjectiveForm(x.second, number, form, grammaticalDegree!!, strength!!, grammaticalGender!!)
             adjectiveForms.add(adjectiveForm)
         }
 
-        return adjectiveForms.filterNotNull().sortedWith (compareBy({ it.degree }, {it.strength}, {it.gender}, {it.grammaticalForm}))
+        return adjectiveForms.filterNotNull().sortedWith (compareBy({ it.grammaticalDegree }, {it.strength}, {it.grammaticalGender}, {it.grammaticalForm}))
     }
 }

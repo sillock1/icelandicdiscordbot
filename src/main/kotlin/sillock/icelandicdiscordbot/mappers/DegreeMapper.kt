@@ -14,13 +14,13 @@ class DegreeMapper: IInflectionalMapper {
         val degreeForms = mutableListOf<DegreeForm?>()
         formInflectedWordPair.forEach { pair ->
             val form = when(pair.first){
-                "FST" -> {DegreeForm(pair.second, null, null, Degree.Positive)}
-                "MST" -> {DegreeForm(pair.second, null, null, Degree.Comparative)}
-                "EST" -> {DegreeForm(pair.second, null, null, Degree.Superlative)}
+                "FST" -> {DegreeForm(pair.second, null, null, GrammaticalDegree.Positive)}
+                "MST" -> {DegreeForm(pair.second, null, null, GrammaticalDegree.Comparative)}
+                "EST" -> {DegreeForm(pair.second, null, null, GrammaticalDegree.Superlative)}
                 else  -> null
             }
             degreeForms.add(form)
         }
-        return degreeForms.filterNotNull().sortedWith (compareBy { it.degree })
+        return degreeForms.filterNotNull().sortedWith (compareBy { it.grammaticalDegree })
     }
 }

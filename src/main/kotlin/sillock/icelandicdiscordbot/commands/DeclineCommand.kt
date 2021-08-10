@@ -16,7 +16,6 @@ import javax.imageio.ImageIO
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
                      private val dmiiDuplicateWordProcessor: DmiiDuplicateWordProcessor,
                      private val inflectionProcessor: InflectionProcessor) : ICommand {
-
     override val name: String
         get() = "decline"
     override val description: String
