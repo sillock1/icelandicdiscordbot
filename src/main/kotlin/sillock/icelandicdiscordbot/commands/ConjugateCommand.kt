@@ -2,13 +2,14 @@ package sillock.icelandicdiscordbot.commands
 
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
+import org.javacord.api.interaction.SlashCommandOptionChoice
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.factories.ImageCreatorFactory
-import sillock.icelandicdiscordbot.factories.InflectionalMapperFactory
 import sillock.icelandicdiscordbot.mappers.InflectionTypeMapper
+import sillock.icelandicdiscordbot.models.enums.GrammaticalMood
+import sillock.icelandicdiscordbot.models.enums.GrammaticalUsage
 import sillock.icelandicdiscordbot.services.DmiiCoreService
-import java.util.*
 
 @Component
 class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
@@ -19,11 +20,46 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
     override val description: String
         get() = "Finds conjugations of a verb"
     override val options: List<SlashCommandOption>
-        get() = listOf(SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING,"verb", "Verb to conjugate", true))
+        get() = listOf(
+            SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "activevoice", "Active voice (Germynd)",
+                listOf(
+                    SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING, "usage", "Verb usage", true,
+                        listOf(
+                            SlashCommandOptionChoice.create("Personal usage (Persónuleg notkun)", GrammaticalUsage.Personal.toString()),
+                            SlashCommandOptionChoice.create("Impersonal usage dative form (Ópersónuleg notkun - (Frumlag í þágufalli))", GrammaticalUsage.ImpersonalDative.toString()),
+                            SlashCommandOptionChoice.create("Impersonal usage dummy subject (Ópersónuleg notkun - (Gervifrumlag))", GrammaticalUsage.ImpersonalDummy.toString()))
+                    ),
+                    SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING, "mood", "Verb mood", true,
+                        listOf(
+                            SlashCommandOptionChoice.create("Indicative mood (Framsöguháttur)", GrammaticalMood.Indicative.toString()),
+                            SlashCommandOptionChoice.create("Subjunctive mood (Viðtengingarháttur)", GrammaticalMood.Subjunctive.toString()))
+                    ),
+                    SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The verb to search", true)
+                )),
+            SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "middlevoice", "Middle voice (Miðmynd)",
+                listOf(
+                    SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING, "usage", "Verb usage", true,
+                        listOf(
+                            SlashCommandOptionChoice.create("Personal usage (Persónuleg notkun)", GrammaticalUsage.Personal.toString()),
+                            SlashCommandOptionChoice.create("Impersonal usage dative form (Ópersónuleg notkun - (Frumlag í þágufalli))", GrammaticalUsage.ImpersonalDative.toString()),
+                            SlashCommandOptionChoice.create("Impersonal usage dummy subject (Ópersónuleg notkun - (Gervifrumlag))", GrammaticalUsage.ImpersonalDummy.toString()))
+                    ),
+                    SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING, "mood", "Verb mood", true,
+                        listOf(
+                            SlashCommandOptionChoice.create("Indicative mood (Framsöguháttur)", GrammaticalMood.Indicative.toString()),
+                            SlashCommandOptionChoice.create("Subjunctive mood (Viðtengingarháttur)", GrammaticalMood.Subjunctive.toString()))
+                    ),
+                    SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The verb to search", true)
+                )),
+                    SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "Imperative", "Imperative form (Boðháttur)",
+                        listOf(SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The verb to search", true))),
+                    SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "Interrogative", "Interrogative form (Spurnarmyndir)",
+                        listOf(SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The verb to search", true)))
+        )
 
     override fun execute(event: SlashCommandInteraction) {
-        val wordParam = event.firstOptionStringValue
-        val response = dmiiCoreService.getVerbConjugation(wordParam.get())
+        val wordParam = event.options.firstOrNull {     x -> x.stringValue.get() == "word" }//.getOptionStringValueByName("word")//.getOptionByName("word").get().stringValue
+        val response = dmiiCoreService.getVerbConjugation(wordParam!!.name.toString())
         val word = response.first()
         val wordType = inflectionTypeMapper.map(word.ofl) ?: return
         val imageList = imageCreatorFactory.create(wordType)
