@@ -10,22 +10,20 @@ class VerbMapper {
     fun map(formInflectedWordPair: List<Pair<String, String>>): List<VerbForm?> {
         val verbForms = mutableListOf<VerbForm?>()
 
-        var grammaticalVoice: GrammaticalVoice? = null
-        var grammaticalMood: GrammaticalMood? = null
-        var grammaticalTense: GrammaticalTense? = null
-        var grammaticalPerson: GrammaticalPerson? = null
-        var grammaticalNumber: GrammaticalNumber? = null
-        var clipped = false
-        var interrogativeMood = false
-        var supine = false
-        var grammaticalUsage: GrammaticalUsage = GrammaticalUsage.Personal
 
-        var impersonal = false
-        var grammaticalForm: GrammaticalForm? = null
 
         formInflectedWordPair.forEach{ x ->
 
-            grammaticalUsage = GrammaticalUsage.Personal
+            var grammaticalVoice: GrammaticalVoice? = null
+            var grammaticalMood: GrammaticalMood? = null
+            var grammaticalTense: GrammaticalTense? = null
+            var grammaticalPerson: GrammaticalPerson? = null
+            var grammaticalNumber: GrammaticalNumber? = null
+            var clipped = false
+            var interrogativeMood = false
+            var supine = false
+            var grammaticalUsage: GrammaticalUsage = GrammaticalUsage.Personal
+
             if(x.first.contains("MM")) grammaticalVoice = GrammaticalVoice.MiddleVoice
             if(x.first.contains("GM")) grammaticalVoice = GrammaticalVoice.ActiveVoice
 
@@ -48,7 +46,6 @@ class VerbMapper {
             if(x.first.contains("SAGNB")) supine = true
 
             if(x.first.contains("OP")) {
-                impersonal = true
                 if(x.first.contains("ÞGF"))
                 {
                     grammaticalUsage = GrammaticalUsage.ImpersonalDative
@@ -59,11 +56,7 @@ class VerbMapper {
                 }
             }
 
-            if(x.first.contains("EF")) grammaticalForm = GrammaticalForm.Genitive
-            if(x.first.contains("ÞF")) grammaticalForm = GrammaticalForm.Accusative
-            if(x.first.contains("ÞGF")) grammaticalForm = GrammaticalForm.Dative
-
-            val verbForm = VerbForm(x.second, grammaticalVoice!!, grammaticalMood!!, grammaticalTense!!, grammaticalPerson!!, grammaticalNumber!!, clipped, interrogativeMood, supine, grammaticalUsage)
+            val verbForm = VerbForm(x.second, grammaticalVoice, grammaticalMood, grammaticalTense, grammaticalPerson, grammaticalNumber, clipped, interrogativeMood, supine, grammaticalUsage)
             verbForms.add(verbForm)
         }
 

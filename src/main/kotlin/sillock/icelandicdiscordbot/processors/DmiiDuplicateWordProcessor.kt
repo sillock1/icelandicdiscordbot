@@ -18,7 +18,7 @@ class DmiiDuplicateWordProcessor {
         for(word in response){
             msgBuilder.addComponents(
                 ActionRow.of(
-                    Button.success(word.guid, word.ord)
+                    Button.success(word.guid, word.baseWordForm)
                 )
             )
         }

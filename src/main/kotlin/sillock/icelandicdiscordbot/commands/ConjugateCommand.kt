@@ -7,14 +7,17 @@ import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.factories.ImageCreatorFactory
 import sillock.icelandicdiscordbot.mappers.InflectionTypeMapper
+import sillock.icelandicdiscordbot.mappers.VerbMapper
 import sillock.icelandicdiscordbot.models.enums.GrammaticalMood
 import sillock.icelandicdiscordbot.models.enums.GrammaticalUsage
+import sillock.icelandicdiscordbot.models.inflectedforms.VerbForm
 import sillock.icelandicdiscordbot.services.DmiiCoreService
 
 @Component
 class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
                        private val imageCreatorFactory: ImageCreatorFactory,
-                       private val inflectionTypeMapper: InflectionTypeMapper): ICommand {
+                       private val inflectionTypeMapper: InflectionTypeMapper,
+                       private val verbMapper: VerbMapper): ICommand {
     override val name: String
         get() = "conjugate"
     override val description: String
@@ -58,10 +61,21 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
         )
 
     override fun execute(event: SlashCommandInteraction) {
-        val wordParam = event.options.firstOrNull {     x -> x.stringValue.get() == "word" }//.getOptionStringValueByName("word")//.getOptionByName("word").get().stringValue
-        val response = dmiiCoreService.getVerbConjugation(wordParam!!.name.toString())
+        //Call a parser to grab relevant argument data
+        //Call the dmii service to grab the conjugation data
+        //Call a mapper to format your data
+        //Then filter on the data using the argument information
+        //Then call the image creator factory and draw the appropriate table(s)
+       // val wordParam = event.options.firstOrNull {     x -> x.stringValue.get() == "word" }//.getOptionStringValueByName("word")//.getOptionByName("word").get().stringValue
+        val response = dmiiCoreService.getVerbConjugation("fara")
         val word = response.first()
-        val wordType = inflectionTypeMapper.map(word.ofl) ?: return
+        val wordType = inflectionTypeMapper.map(word.shortHandWordClass) ?: return
+        var inflectedVerbs = mutableListOf<Pair<String, String>>()
+        word.inflectionalFormList.forEach { x ->
+            inflectedVerbs.add(Pair(x.grammaticalTagString, x.inflectedString))
+        }
+        val verbFormsList = verbMapper.map(inflectedVerbs)
+
         val imageList = imageCreatorFactory.create(wordType)
 
         event.channel.get().sendMessage(response.toString())

@@ -76,9 +76,9 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
             }
             g2d.color = Color.WHITE
             g2d.font= Font("Segoe UI", Font.BOLD, 64)
-            g2d.drawString(word.ord, 60, 100)
+            g2d.drawString(word.baseWordForm, 60, 100)
 
-            val wordType = wordTypeMapper.map(word.ofl)
+            val wordType = wordTypeMapper.map(word.shortHandWordClass)
 
             g2d.font= Font("Segoe UI", Font.BOLD, 64)
             g2d.color = Color.ORANGE

@@ -2,10 +2,7 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
-import sillock.icelandicdiscordbot.models.enums.GrammaticalForm
-import sillock.icelandicdiscordbot.models.enums.GrammaticalNumber
 import sillock.icelandicdiscordbot.models.enums.InflectionType
-import sillock.icelandicdiscordbot.models.inflectedforms.GenderedForm
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import java.awt.Color
@@ -58,9 +55,9 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
 
         g2d.color = Color.WHITE
         g2d.font= Font("Segoe UI", Font.BOLD, 64)
-        g2d.drawString(word.ord, 60, 100)
+        g2d.drawString(word.baseWordForm, 60, 100)
 
-        val wordType = wordTypeMapper.map(word.ofl)
+        val wordType = wordTypeMapper.map(word.shortHandWordClass)
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE
