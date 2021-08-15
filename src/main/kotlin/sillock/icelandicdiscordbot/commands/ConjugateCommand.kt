@@ -1,17 +1,17 @@
 package sillock.icelandicdiscordbot.commands
 
-import org.javacord.api.interaction.SlashCommandInteraction
-import org.javacord.api.interaction.SlashCommandOption
-import org.javacord.api.interaction.SlashCommandOptionChoice
-import org.javacord.api.interaction.SlashCommandOptionType
+import org.javacord.api.interaction.*
 import org.springframework.stereotype.Component
+import org.yaml.snakeyaml.util.EnumUtils
 import sillock.icelandicdiscordbot.factories.ImageCreatorFactory
 import sillock.icelandicdiscordbot.mappers.InflectionTypeMapper
 import sillock.icelandicdiscordbot.mappers.VerbMapper
 import sillock.icelandicdiscordbot.models.enums.GrammaticalMood
 import sillock.icelandicdiscordbot.models.enums.GrammaticalUsage
+import sillock.icelandicdiscordbot.models.enums.GrammaticalVoice
 import sillock.icelandicdiscordbot.models.inflectedforms.VerbForm
 import sillock.icelandicdiscordbot.services.DmiiCoreService
+import kotlin.reflect.typeOf
 
 @Component
 class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
@@ -24,7 +24,7 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
         get() = "Finds conjugations of a verb"
     override val options: List<SlashCommandOption>
         get() = listOf(
-            SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "activevoice", "Active voice (Germynd)",
+            SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "ActiveVoice", "Active voice (Germynd)",
                 listOf(
                     SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING, "usage", "Verb usage", true,
                         listOf(
@@ -39,7 +39,7 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
                     ),
                     SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The verb to search", true)
                 )),
-            SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "middlevoice", "Middle voice (Miðmynd)",
+            SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "MiddleVoice", "Middle voice (Miðmynd)",
                 listOf(
                     SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING, "usage", "Verb usage", true,
                         listOf(
@@ -67,10 +67,12 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
         //Then filter on the data using the argument information
         //Then call the image creator factory and draw the appropriate table(s)
        // val wordParam = event.options.firstOrNull {     x -> x.stringValue.get() == "word" }//.getOptionStringValueByName("word")//.getOptionByName("word").get().stringValue
-        val response = dmiiCoreService.getVerbConjugation("fara")
+        val paramFilters = parseParams(event.options)
+        val response = dmiiCoreService.getVerbConjugation(paramFilters.word)
+
         val word = response.first()
         val wordType = inflectionTypeMapper.map(word.shortHandWordClass) ?: return
-        var inflectedVerbs = mutableListOf<Pair<String, String>>()
+        val inflectedVerbs = mutableListOf<Pair<String, String>>()
         word.inflectionalFormList.forEach { x ->
             inflectedVerbs.add(Pair(x.grammaticalTagString, x.inflectedString))
         }
@@ -80,4 +82,35 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
 
         event.channel.get().sendMessage(response.toString())
     }
+
+    private fun parseParams(options: List<SlashCommandInteractionOption>) : ConjugateFilterObject{
+        var voice: GrammaticalVoice? = null
+        var usage: GrammaticalUsage? = null
+        var mood: GrammaticalMood? = null
+        val word: String?
+        var interrogative = false
+        when (val firstParam = options.firstOrNull()?.name?.lowercase()) {
+            "interrogative" -> interrogative = true
+            "imperative" -> {
+                mood = EnumUtils.findEnumInsensitiveCase(GrammaticalMood::class.java, firstParam)
+            }
+            else -> {
+                voice = EnumUtils.findEnumInsensitiveCase(GrammaticalVoice::class.java, firstParam)
+            }
+        }
+        if(voice == GrammaticalVoice.ActiveVoice || voice == GrammaticalVoice.MiddleVoice){
+        val usageParam = options.firstOrNull()?.options?.elementAt(0)?.stringValue?.get()
+        val moodParam = options.firstOrNull()?.options?.elementAt(1)?.stringValue?.get()
+            usage = usageParam?.let {  EnumUtils.findEnumInsensitiveCase(GrammaticalUsage::class.java, it) }
+            mood = moodParam?.let {  EnumUtils.findEnumInsensitiveCase(GrammaticalMood::class.java, it) }
+        word = options.firstOrNull()?.options?.elementAt(2)?.stringValue?.get()
+        }
+        else{
+            word = options.firstOrNull()?.options?.elementAt(0)?.stringValue?.get()
+        }
+
+        return ConjugateFilterObject(word!!, voice, usage, mood, interrogative)
+    }
+
+    data class ConjugateFilterObject(val word: String, val voice: GrammaticalVoice?, val usage: GrammaticalUsage?, val mood: GrammaticalMood?, val interrogative: Boolean)
 }
