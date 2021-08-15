@@ -18,7 +18,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         get() = InflectionType.Article
 
     override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
-        var width = 550
+        var width = 600
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 

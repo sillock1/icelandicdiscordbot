@@ -8,15 +8,17 @@ import java.io.Serial
 @Serializable
 data class Word(
     @SerialName("ord")
-                val baseWordForm: String,
+    val baseWordForm: String,
     @SerialName("guid")
-                val guid: String,
+    val guid: String,
     @SerialName("ofl_heiti")
-                val wordClass: String,
+    val wordClass: String,
     @SerialName("ofl")
     val shortHandWordClass: String,
     @SerialName("kyn")
     val nounGender: String,
+    @SerialName("hluti")
+    val semanticClassification: String? = null,
     @SerialName("bmyndir")
     val inflectionalFormList: List<InflectionalForm> = listOf()
 )
