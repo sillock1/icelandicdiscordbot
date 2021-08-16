@@ -15,7 +15,6 @@ import kotlin.reflect.typeOf
 
 @Component
 class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
-                       private val imageCreatorFactory: ImageCreatorFactory,
                        private val inflectionTypeMapper: InflectionTypeMapper,
                        private val verbMapper: VerbMapper): ICommand {
     override val name: String
@@ -77,15 +76,19 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
             inflectedVerbs.add(Pair(x.grammaticalTagString, x.inflectedString))
         }
         val verbFormsList = verbMapper.map(inflectedVerbs)
+        val filteredList = verbFormsList.filter { x ->
+            paramFilters.voice?.let{y -> y == x?.grammaticalVoice} ?: true
+                && paramFilters.usage?.let{y -> y == x?.grammaticalUsage} ?: true
+                && paramFilters.mood?.let{y -> y == x?.grammaticalMood} ?: true
+                && paramFilters.interrogative.let{y -> y == x?.interrogativeMood}}
 
-        val imageList = imageCreatorFactory.create(wordType)
 
         event.channel.get().sendMessage(response.toString())
     }
 
     private fun parseParams(options: List<SlashCommandInteractionOption>) : ConjugateFilterObject{
         var voice: GrammaticalVoice? = null
-        var usage: GrammaticalUsage? = null
+        var usage: GrammaticalUsage? = GrammaticalUsage.Personal
         var mood: GrammaticalMood? = null
         val word: String?
         var interrogative = false
