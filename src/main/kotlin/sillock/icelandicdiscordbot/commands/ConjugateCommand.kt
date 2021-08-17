@@ -1,14 +1,18 @@
 package sillock.icelandicdiscordbot.commands
 
+import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.interaction.*
 import org.springframework.stereotype.Component
 import org.yaml.snakeyaml.util.EnumUtils
+import sillock.icelandicdiscordbot.creators.imagecreators.ImperativeVerbImageCreator
 import sillock.icelandicdiscordbot.factories.ImageCreatorFactory
+import sillock.icelandicdiscordbot.factories.VerbImageCreatorFactory
 import sillock.icelandicdiscordbot.mappers.InflectionTypeMapper
 import sillock.icelandicdiscordbot.mappers.VerbMapper
 import sillock.icelandicdiscordbot.models.enums.GrammaticalMood
 import sillock.icelandicdiscordbot.models.enums.GrammaticalUsage
 import sillock.icelandicdiscordbot.models.enums.GrammaticalVoice
+import sillock.icelandicdiscordbot.models.enums.VerbImageCreatorType
 import sillock.icelandicdiscordbot.models.inflectedforms.VerbForm
 import sillock.icelandicdiscordbot.services.DmiiCoreService
 import kotlin.reflect.typeOf
@@ -16,7 +20,8 @@ import kotlin.reflect.typeOf
 @Component
 class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
                        private val inflectionTypeMapper: InflectionTypeMapper,
-                       private val verbMapper: VerbMapper): ICommand {
+                       private val verbMapper: VerbMapper,
+                       private val verbImageCreatorFactory: VerbImageCreatorFactory): ICommand {
     override val name: String
         get() = "conjugate"
     override val description: String
@@ -66,6 +71,7 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
         //Then filter on the data using the argument information
         //Then call the image creator factory and draw the appropriate table(s)
        // val wordParam = event.options.firstOrNull {     x -> x.stringValue.get() == "word" }//.getOptionStringValueByName("word")//.getOptionByName("word").get().stringValue
+        event.createImmediateResponder().setContent("Result:").respond()
         val paramFilters = parseParams(event.options)
         val response = dmiiCoreService.getVerbConjugation(paramFilters.word)
 
@@ -82,8 +88,20 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
                 && paramFilters.mood?.let{y -> y == x?.grammaticalMood} ?: true
                 && paramFilters.interrogative.let{y -> y == x?.interrogativeMood}}
 
+        var verbImageCreatorType: VerbImageCreatorType
+        if(filteredList.firstOrNull()?.grammaticalMood == GrammaticalMood.Imperative){
+            verbImageCreatorType = VerbImageCreatorType.Imperative
+        }
+        else{
+            verbImageCreatorType = VerbImageCreatorType.Tense
+        }
+        var imageCreator = verbImageCreatorFactory.create(verbImageCreatorType)
+        var image = imageCreator.create(word, filteredList)
 
-        event.channel.get().sendMessage(response.toString())
+        val messageBuilder = MessageBuilder()
+        messageBuilder.addAttachment(image.first(), "conjugate.png")
+
+        messageBuilder.send(event.channel.get())
     }
 
     private fun parseParams(options: List<SlashCommandInteractionOption>) : ConjugateFilterObject{

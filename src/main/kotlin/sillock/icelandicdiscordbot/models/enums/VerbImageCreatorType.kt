@@ -1,7 +1,6 @@
 package sillock.icelandicdiscordbot.models.enums
 
-enum class GrammaticalMood {
-    Indicative,
-    Subjunctive,
+enum class VerbImageCreatorType {
+    Tense,
     Imperative
 }

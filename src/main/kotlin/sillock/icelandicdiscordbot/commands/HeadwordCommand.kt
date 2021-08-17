@@ -25,8 +25,8 @@ class HeadwordCommand (private val dmiiCoreService: DmiiCoreService,
         val response = dmiiCoreService.getHeadword(wordParam.get())
 
         event.createImmediateResponder().setContent("Here's a list of words I found for you").respond()
-        val msgBuilder = MessageBuilder().setContent("I found ${response.count()} words")
-        for(word in response){
+        val msgBuilder = MessageBuilder().setContent("Here's the top 5 results I could find")
+        for(word in response.subList(0, 5)){
             val wordClass = wordTypeMapper.map(word.shortHandWordClass)
             msgBuilder.addComponents(ActionRow.of(Button.secondary(word.guid, "${word.baseWordForm}  $wordClass")))
         }
