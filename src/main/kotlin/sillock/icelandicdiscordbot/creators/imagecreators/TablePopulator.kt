@@ -28,13 +28,21 @@ class TablePopulator {
         g2d.color = Color.WHITE
         var offsetYSpacing = (offsetY+(rowSpacing*1.5).roundToInt())
         var offsetXSpacing = 10
+        var rowIndex = 0
         for(row in contentList){
+            var elemIndex = 0
             for(elem in row){
+                g2d.font= Font("Segoe UI", Font.BOLD, fontSize)
+                if(rowIndex == 0 || elemIndex == 0){
+                    g2d.font= Font("Segoe UI", Font.PLAIN, fontSize-4)
+                }
                 g2d.drawString(elem, (offsetX)+offsetXSpacing, offsetYSpacing)
                 offsetXSpacing += columnSpacing * 3
+                elemIndex +=1
             }
             offsetXSpacing = 10
             offsetYSpacing+=rowSpacing
+            rowIndex += 1
         }
         return g2d
     }

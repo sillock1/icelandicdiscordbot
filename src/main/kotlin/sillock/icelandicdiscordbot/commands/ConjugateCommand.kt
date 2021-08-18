@@ -75,6 +75,11 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
         val paramFilters = parseParams(event.options)
         val response = dmiiCoreService.getVerbConjugation(paramFilters.word)
 
+        if(response.isEmpty()) {
+            MessageBuilder().setContent("No results").send(event.channel.get())
+            return
+        }
+
         val word = response.first()
         val wordType = inflectionTypeMapper.map(word.shortHandWordClass) ?: return
         val inflectedVerbs = mutableListOf<Pair<String, String>>()
@@ -88,19 +93,29 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
                 && paramFilters.mood?.let{y -> y == x?.grammaticalMood} ?: true
                 && paramFilters.interrogative.let{y -> y == x?.interrogativeMood}}
 
-        var verbImageCreatorType: VerbImageCreatorType
+        if(filteredList.isEmpty()) {
+            MessageBuilder().setContent("No results").send(event.channel.get())
+            return
+        }
+        val verbImageCreatorType: VerbImageCreatorType
         if(filteredList.firstOrNull()?.grammaticalMood == GrammaticalMood.Imperative){
             verbImageCreatorType = VerbImageCreatorType.Imperative
+        }
+        else if(filteredList.firstOrNull()?.interrogativeMood!!){
+            verbImageCreatorType = VerbImageCreatorType.Interrogative
         }
         else{
             verbImageCreatorType = VerbImageCreatorType.Tense
         }
-        var imageCreator = verbImageCreatorFactory.create(verbImageCreatorType)
-        var image = imageCreator.create(word, filteredList)
+        val imageCreator = verbImageCreatorFactory.create(verbImageCreatorType)
+        val images = imageCreator.create(word, filteredList)
 
         val messageBuilder = MessageBuilder()
-        messageBuilder.addAttachment(image.first(), "conjugate.png")
-
+        var i = 0
+        for(image in images.reversed()) {
+            messageBuilder.addAttachment(image, "conjugate${image.hashCode()}.png")
+            i+=1
+        }
         messageBuilder.send(event.channel.get())
     }
 

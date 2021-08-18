@@ -14,9 +14,7 @@ import java.awt.image.BufferedImage
 @Component
 class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                            private val tablePopulator: TablePopulator,
-                           private val wordTypeMapper: WordTypeMapper,
-                            private val genderedImageCreator: GenderedImageCreator
-): IImageCreator<InflectedForm> {
+                           private val wordTypeMapper: WordTypeMapper): IImageCreator<InflectedForm> {
     override val inflectionType: InflectionType
         get() = InflectionType.Adjective
 

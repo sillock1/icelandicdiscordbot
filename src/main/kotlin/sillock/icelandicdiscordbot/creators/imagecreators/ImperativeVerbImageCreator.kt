@@ -20,16 +20,6 @@ class ImperativeVerbImageCreator(private val tableDrawingCreator: TableDrawingCr
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
-        /*
-        val grouped = verbFormList.groupBy { it?.grammaticalVoice }
-            .mapValues { (_, v) -> v.groupBy { it?.grammaticalUsage }
-                .mapValues { (_, v) -> v.groupBy { it?.grammaticalMood }
-                    .mapValues { (_, v) -> v.groupBy { it?.grammaticalTense }
-                        .mapValues { (_, v) -> v.groupBy { it?.clipped }
-                            .mapValues { (_, v) -> v.groupBy { it?.grammaticalPerson }
-                                .mapValues { (_, v) -> v.groupBy { it?.supine }
-                                    .mapValues { (_, v) -> v.groupBy { it?.interrogativeMood } }}}}}}}
-        */
         val grouped = verbFormList.groupBy { it?.grammaticalNumber }
 
         var tableXOffset = 60
