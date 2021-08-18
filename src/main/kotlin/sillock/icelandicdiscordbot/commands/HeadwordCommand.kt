@@ -1,14 +1,18 @@
 package sillock.icelandicdiscordbot.commands
 
+import org.javacord.api.entity.message.MessageBuilder
+import org.javacord.api.entity.message.component.ActionRow
+import org.javacord.api.entity.message.component.Button
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
+import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.services.DmiiCoreService
-import java.util.*
 
 @Component
-class HeadwordCommand (private val dmiiCoreService: DmiiCoreService) : ICommand {
+class HeadwordCommand (private val dmiiCoreService: DmiiCoreService,
+                       private val wordTypeMapper: WordTypeMapper) : ICommand {
     override val name: String
         get() = "headword"
     override val description: String
@@ -20,8 +24,12 @@ class HeadwordCommand (private val dmiiCoreService: DmiiCoreService) : ICommand 
         val wordParam = event.firstOptionStringValue
         val response = dmiiCoreService.getHeadword(wordParam.get())
 
-        //val embed = nounEmbedCreator.create()
-
-        event.channel.get().sendMessage("")
+        event.createImmediateResponder().setContent("Here's a list of words I found for you").respond()
+        val msgBuilder = MessageBuilder().setContent("Here's the top 5 results I could find")
+        for(word in response.subList(0, 5)){
+            val wordClass = wordTypeMapper.map(word.shortHandWordClass)
+            msgBuilder.addComponents(ActionRow.of(Button.secondary(word.guid, "${word.baseWordForm}  $wordClass")))
+        }
+        msgBuilder.send(event.channel.get())
     }
 }

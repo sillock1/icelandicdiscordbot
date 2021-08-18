@@ -1,14 +1,24 @@
 package sillock.icelandicdiscordbot.models.serialisations
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import sillock.icelandicdiscordbot.models.serialisations.InflectionalForm
+import java.io.Serial
 
 @Serializable
-data class Word(val ord: String,
-                val guid: String,
-                val ofl_heiti: String,
-                val ofl: String,
-                val kyn: String,
-                val hluti: String = String(),
-                val bmyndir: List<InflectionalForm> = listOf()
+data class Word(
+    @SerialName("ord")
+    val baseWordForm: String,
+    @SerialName("guid")
+    val guid: String,
+    @SerialName("ofl_heiti")
+    val wordClass: String,
+    @SerialName("ofl")
+    val shortHandWordClass: String,
+    @SerialName("kyn")
+    val nounGender: String,
+    @SerialName("hluti")
+    val semanticClassification: String? = null,
+    @SerialName("bmyndir")
+    val inflectionalFormList: List<InflectionalForm> = listOf()
 )

@@ -8,18 +8,13 @@ import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import sillock.icelandicdiscordbot.models.serialisations.Word
 import java.awt.Color
 import java.awt.Font
-import java.awt.Image
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 
 @Component
 class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator,
                            private val tablePopulator: TablePopulator,
-                           private val wordTypeMapper: WordTypeMapper,
-                            private val genderedImageCreator: GenderedImageCreator
-): IImageCreator<InflectedForm> {
+                           private val wordTypeMapper: WordTypeMapper): IImageCreator<InflectedForm> {
     override val inflectionType: InflectionType
         get() = InflectionType.Adjective
 
@@ -28,7 +23,7 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
         var height = 800
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
-        val grouped = (inflectionalFormList as List<AdjectiveForm>).groupBy{ it.degree }.mapValues { (_, v) ->
+        val grouped = (inflectionalFormList as List<AdjectiveForm>).groupBy{ it.grammaticalDegree }.mapValues { (_, v) ->
             v.groupBy { it.strength }.mapValues { (_, v) ->
                 v.groupBy { it.grammaticalNumber }.mapValues { (_, v) ->
                     v.groupBy { it.grammaticalForm } } } }
@@ -79,9 +74,9 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
             }
             g2d.color = Color.WHITE
             g2d.font= Font("Segoe UI", Font.BOLD, 64)
-            g2d.drawString(word.ord, 60, 100)
+            g2d.drawString(word.baseWordForm, 60, 100)
 
-            val wordType = wordTypeMapper.map(word.ofl)
+            val wordType = wordTypeMapper.map(word.shortHandWordClass)
 
             g2d.font= Font("Segoe UI", Font.BOLD, 64)
             g2d.color = Color.ORANGE
