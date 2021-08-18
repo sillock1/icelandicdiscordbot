@@ -62,7 +62,7 @@ class TenseVerbImageCreator(private val tableDrawingCreator: TableDrawingCreator
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE
-        g2d.drawString("Verb (Sagnorð)", 60, 220)
+        g2d.drawString("Verb (Sagnorð)", word.baseWordForm.length*50, 100)
 
         g2d.dispose()
 

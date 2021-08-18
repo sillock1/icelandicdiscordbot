@@ -16,10 +16,13 @@ class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
         val response = dmiiCoreService.getDeclensionsByGuid(event!!.messageComponentInteraction.customId)
 
         event.interaction.createImmediateResponder().setContent("Result:").respond()
+
         val messageBuilder = MessageBuilder()
         val imageList = inflectionProcessor.process(response)
         imageList.forEach{
             x ->  messageBuilder.addAttachment(x, "inflect.png").send(event.interaction.channel.get())
         }
+        //Delete the original message to prevent spam
+        event.messageComponentInteraction.message?.get()?.delete()
     }
 }
