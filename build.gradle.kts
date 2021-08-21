@@ -50,6 +50,10 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
     testLogging { events(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED); exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL }
