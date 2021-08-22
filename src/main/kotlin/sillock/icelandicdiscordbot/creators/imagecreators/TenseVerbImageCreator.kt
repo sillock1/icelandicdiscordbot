@@ -40,7 +40,7 @@ class TenseVerbImageCreator(private val tableDrawingCreator: TableDrawingCreator
         var imageDataList : MutableList<MutableList<String>> = mutableListOf()
         imageDataList.add(subHeadingList)
 
-        var tableYOffset = 360
+        var tableYOffset = 160
         for(grammaticalTense in grouped){
                 for(grammaticalPerson in grammaticalTense.value){
                     val rowData : MutableList<String> = mutableListOf()

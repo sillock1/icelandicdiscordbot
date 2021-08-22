@@ -9,6 +9,7 @@ import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.services.DmiiCoreService
+import kotlin.math.min
 
 @Component
 class HeadwordCommand (private val dmiiCoreService: DmiiCoreService,
@@ -26,7 +27,7 @@ class HeadwordCommand (private val dmiiCoreService: DmiiCoreService,
 
         event.createImmediateResponder().setContent("Here's a list of words I found for you").respond()
         val msgBuilder = MessageBuilder().setContent("Here's the top 5 results I could find")
-        for(word in response.subList(0, 5)){
+        for(word in response.subList(0, min(5, response.size))){
             val wordClass = wordTypeMapper.map(word.shortHandWordClass)
             msgBuilder.addComponents(ActionRow.of(Button.secondary(word.guid, "${word.baseWordForm}  $wordClass")))
         }
