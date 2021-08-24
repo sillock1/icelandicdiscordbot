@@ -35,7 +35,7 @@ deploy-job:
     - shell
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
-      when: on_success
+      when: always
   before_script:
     - "docker --version"
     - "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
