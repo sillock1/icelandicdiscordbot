@@ -9,25 +9,22 @@ import org.openqa.selenium.firefox.FirefoxOptions
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.helpers.Failure
 import sillock.icelandicdiscordbot.services.WebScrapingService
+import java.net.URL
 
 @Component
-class ExampleCommand(private val webScrapingService: WebScrapingService): ICommand {
+class WordAudioSampleCommand(private val webScrapingService: WebScrapingService): ICommand {
     override val name: String
-        get() = "example"
+        get() = "say"
     override val description: String
-        get() = "Get usage of word"
+        get() = "Get audio file for word"
     override val options: List<SlashCommandOption>
         get() = listOf(
-            SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "Word to search by", true),
-            SlashCommandOption.create(SlashCommandOptionType.INTEGER, "amount", "Amount of examples", false)
+            SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "Word to search by", true)
         )
-    private val defaultExampleCount: Int = 6
-
 
     override fun execute(event: SlashCommandInteraction) {
         event.respondLater().join()
         val wordParam = event.firstOptionStringValue.get()
-        val exampleCount = if (!event.secondOptionIntValue.isEmpty) event.secondOptionIntValue.get() else defaultExampleCount
 
         val options = FirefoxOptions()
         options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200","--ignore-certificate-errors", "--silent")
@@ -37,20 +34,18 @@ class ExampleCommand(private val webScrapingService: WebScrapingService): IComma
         if(results is Failure){
             event.createFollowupMessageBuilder().setContent(results.reason).send()
             driver.quit()
+            return
         }
-        else{
-            val examples = driver.findElements(By.ByCssSelector("div[class*='dict-item dict-daemi']"))
+        else {
+            val examples = driver.findElements(By.ByCssSelector("source[type='audio/ogg']"))
 
-            if(examples.isEmpty()){
-                event.createFollowupMessageBuilder().setContent("No examples available").send()
+            if (examples.isEmpty()) {
+                event.createFollowupMessageBuilder().setContent("No audio sample available").send()
                 driver.quit()
                 return
             }
-            var result = ""
-            examples.take(exampleCount).forEach { x ->
-                result += x.text + "\n"
-            }
-            event.createFollowupMessageBuilder().setContent(result).send()
+            val file = examples.first().getAttribute("src")
+            event.createFollowupMessageBuilder().addAttachment(URL(file)).send()
             driver.quit()
         }
     }
