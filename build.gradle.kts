@@ -36,6 +36,8 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:1.6.1")
     implementation("io.ktor:ktor-client-logging:1.6.1")
     implementation("io.ktor:ktor-client-serialization:1.6.1")
+    implementation("org.seleniumhq.selenium:selenium-firefox-driver:3.141.59")
+    implementation("org.seleniumhq.selenium:selenium-java:3.141.59")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.kotest:kotest-runner-junit5:4.5.0")

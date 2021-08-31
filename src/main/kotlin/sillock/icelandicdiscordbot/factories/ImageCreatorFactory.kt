@@ -1,6 +1,5 @@
 package sillock.icelandicdiscordbot.factories
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.creators.imagecreators.IImageCreator
 import sillock.icelandicdiscordbot.models.enums.InflectionType
