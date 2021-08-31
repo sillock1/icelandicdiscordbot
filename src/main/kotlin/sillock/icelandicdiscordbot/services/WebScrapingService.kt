@@ -1,8 +1,6 @@
 package sillock.icelandicdiscordbot.services
 
 import org.openqa.selenium.By
-import org.openqa.selenium.Keys
-import org.openqa.selenium.WebElement
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -18,10 +16,15 @@ class WebScrapingService {
         val wait = WebDriverWait(driver, 3)
         driver.get("https://islenskordabok.arnastofnun.is")
 
-        driver.findElement(By.name("searchBoxInput")).sendKeys(wordParam + Keys.ENTER)
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.ByClassName("breadcrumb")))
-        val tableElements = driver.findElements(By.ByCssSelector("a[href*='\\/ord\\/']"))
-        //TODO: Fix issue where this page isn't needed, loads straight to word page
+        driver.findElement(By.name("searchBoxInput")).sendKeys(wordParam)
+        driver.findElement(By.cssSelector("button[class*='btn btn-primary']")).click()
+
+        if(driver.currentUrl.contains("/ord/")){
+            return Success(driver)
+        }
+
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.ByCssSelector("table[class*='list-group mb-4 dictionary-list']")))
+        val tableElements = driver.findElements(By.ByCssSelector("a[href^='/ord']"))
         if(tableElements.isNotEmpty()) {
             tableElements.first().click()
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.ByClassName("dict-view")))

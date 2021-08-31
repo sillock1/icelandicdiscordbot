@@ -6,6 +6,8 @@ import org.javacord.api.interaction.SlashCommandOptionType
 import org.openqa.selenium.By
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxOptions
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.helpers.Failure
 import sillock.icelandicdiscordbot.services.WebScrapingService
@@ -33,25 +35,27 @@ class ExampleCommand(private val webScrapingService: WebScrapingService): IComma
         options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200","--ignore-certificate-errors", "--silent")
         val driver = FirefoxDriver(options)
 
-        val results = webScrapingService.getWordPage(driver, wordParam)
-        if(results is Failure){
-            event.createFollowupMessageBuilder().setContent(results.reason).send()
-            driver.quit()
-        }
-        else{
-            val examples = driver.findElements(By.ByCssSelector("div[class*='dict-item dict-daemi']"))
+        val searchResult = webScrapingService.getWordPage(driver, wordParam)
 
-            if(examples.isEmpty()){
-                event.createFollowupMessageBuilder().setContent("No examples available").send()
-                driver.quit()
-                return
-            }
-            var result = ""
-            examples.take(exampleCount).forEach { x ->
-                result += x.text + "\n"
-            }
-            event.createFollowupMessageBuilder().setContent(result).send()
+        if(searchResult is Failure){
+            event.createFollowupMessageBuilder().setContent("Word does not exist").send()
             driver.quit()
+            return
         }
+        WebDriverWait(driver, 3).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.ByCssSelector("div[class*='dictionary-entry card flex-grow-1']")))
+        val examples = driver.findElements(By.ByCssSelector("div[class*='dict-item dict-daemi']"))
+
+        if(examples.isEmpty()){
+            event.createFollowupMessageBuilder().setContent("No examples available").send()
+            driver.quit()
+            return
+        }
+        var result = ""
+        examples.take(exampleCount).forEach { x ->
+            result += x.text + "\n"
+        }
+        event.createFollowupMessageBuilder().setContent(result).send()
+        driver.quit()
+
     }
 }
