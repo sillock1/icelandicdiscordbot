@@ -2,7 +2,7 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.NounGenderMapper
-import sillock.icelandicdiscordbot.models.serialisations.Word
+import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 import sillock.icelandicdiscordbot.models.enums.InflectionType
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
 import java.awt.Color
@@ -17,7 +17,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
     override val inflectionType: InflectionType
         get() = InflectionType.Article
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
+    override fun create(dmiiWord: DmiiWord, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
         var width = 600
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
@@ -36,7 +36,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         g2d.fillRect(0,0, width, height)
 
         val subHeadingList = mutableListOf("Form", "No Article", "With article")
-        val gender = nounGenderMapper.map(word.nounGender)
+        val gender = nounGenderMapper.map(dmiiWord.nounGender)
         for(grammaticalNum in grouped){
             val imageDataList : MutableList<MutableList<String>> = mutableListOf()
             imageDataList.add(subHeadingList)
@@ -55,7 +55,7 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
 
         g2d.color = Color.WHITE
         g2d.font= Font("Segoe UI", Font.BOLD, 64)
-        g2d.drawString(word.baseWordForm, 60, 100)
+        g2d.drawString(dmiiWord.baseWordForm, 60, 100)
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE

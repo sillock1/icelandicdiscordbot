@@ -1,12 +1,10 @@
 package sillock.icelandicdiscordbot.creators.imagecreators
 
-import sillock.icelandicdiscordbot.models.serialisations.Word
+import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 import sillock.icelandicdiscordbot.models.enums.InflectionType
-import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
-import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
 interface IImageCreator<T> {
     val inflectionType: InflectionType
-    fun create(word: Word, inflectionalFormList: List<T?>): List<BufferedImage>
+    fun create(dmiiWord: DmiiWord, inflectionalFormList: List<T?>): List<BufferedImage>
 }
