@@ -12,10 +12,10 @@ import sillock.icelandicdiscordbot.services.DmiiCoreService
 import kotlin.math.min
 
 @Component
-class HeadwordCommand (private val dmiiCoreService: DmiiCoreService,
-                       private val wordTypeMapper: WordTypeMapper) : ICommand {
+class WordCommand (private val dmiiCoreService: DmiiCoreService,
+                   private val wordTypeMapper: WordTypeMapper) : ICommand {
     override val name: String
-        get() = "headword"
+        get() = "word"
     override val description: String
         get() = "Searches for headword"
     override val options: List<SlashCommandOption>

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.WordTypeMapper
 import sillock.icelandicdiscordbot.models.enums.InflectionType
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
-import sillock.icelandicdiscordbot.models.serialisations.Word
+import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 import java.awt.Color
 import java.awt.Font
 import java.awt.RenderingHints
@@ -17,7 +17,7 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
     override val inflectionType: InflectionType
         get() = InflectionType.Gender
 
-    override fun create(word: Word, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
+    override fun create(dmiiWord: DmiiWord, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
         var width = 700
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
@@ -55,9 +55,9 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
 
         g2d.color = Color.WHITE
         g2d.font= Font("Segoe UI", Font.BOLD, 64)
-        g2d.drawString(word.baseWordForm, 60, 100)
+        g2d.drawString(dmiiWord.baseWordForm, 60, 100)
 
-        val wordType = wordTypeMapper.map(word.shortHandWordClass)
+        val wordType = wordTypeMapper.map(dmiiWord.shortHandWordClass)
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE

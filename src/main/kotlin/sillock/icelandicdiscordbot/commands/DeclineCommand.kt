@@ -6,11 +6,9 @@ import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionChoice
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import sillock.icelandicdiscordbot.processors.InflectionProcessor
-import java.io.File
-import javax.imageio.ImageIO
+import sillock.icelandicdiscordbot.services.DmiiCoreService
 
 @Component
 class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
@@ -51,10 +49,8 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
         event.createImmediateResponder().setContent("Result:").respond()
         val messageBuilder = MessageBuilder()
         val images = inflectionProcessor.process(response)
-        var i = 0
         for(image in images.reversed()) {
             messageBuilder.addAttachment(image, "inflected${image.hashCode()}.png")
-            i+=1
         }
         messageBuilder.send(event.channel.get())
     }
