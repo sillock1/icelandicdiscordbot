@@ -2,11 +2,9 @@ package sillock.icelandicdiscordbot.models.serialisations
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import sillock.icelandicdiscordbot.models.serialisations.InflectionalForm
-import java.io.Serial
 
 @Serializable
-data class Word(
+data class DmiiWord(
     @SerialName("ord")
     val baseWordForm: String,
     @SerialName("guid")

@@ -3,7 +3,7 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.models.enums.VerbImageCreatorType
 import sillock.icelandicdiscordbot.models.inflectedforms.VerbForm
-import sillock.icelandicdiscordbot.models.serialisations.Word
+import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 import java.awt.Color
 import java.awt.Font
 import java.awt.RenderingHints
@@ -15,7 +15,7 @@ class InterrogativeVerbImageCreator(private val tableDrawingCreator: TableDrawin
     override val verbImageCreatorType: VerbImageCreatorType
         get() = VerbImageCreatorType.Interrogative
 
-    override fun create(word: Word, verbFormList: List<VerbForm?>): List<BufferedImage> {
+    override fun create(dmiiWord: DmiiWord, verbFormList: List<VerbForm?>): List<BufferedImage> {
         var width = 400
         val height = 1200//800
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
@@ -60,11 +60,11 @@ class InterrogativeVerbImageCreator(private val tableDrawingCreator: TableDrawin
 
         g2d.color = Color.WHITE
         g2d.font= Font("Segoe UI", Font.BOLD, 64)
-        g2d.drawString(word.baseWordForm, 60, 100)
+        g2d.drawString(dmiiWord.baseWordForm, 60, 100)
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE
-        g2d.drawString("Verb (Sagnorð)", word.baseWordForm.length*50, 100)
+        g2d.drawString("Verb (Sagnorð)", dmiiWord.baseWordForm.length*50, 100)
 
         g2d.dispose()
 
