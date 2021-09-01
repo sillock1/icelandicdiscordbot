@@ -5,11 +5,11 @@ import org.javacord.api.entity.message.component.ActionRow
 import org.javacord.api.entity.message.component.Button
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.models.serialisations.Word
+import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 
 @Component
 class DmiiDuplicateWordProcessor {
-    fun response(event: SlashCommandInteraction, response: List<Word>){
+    fun response(event: SlashCommandInteraction, response: List<DmiiWord>){
         event.createImmediateResponder().setContent("Sorry I couldn't find the exact word you were looking for...").respond()
         val msgBuilder = MessageBuilder()
         if(response.isNotEmpty())
