@@ -9,8 +9,6 @@ import sillock.icelandicdiscordbot.commands.ICommand
 class CommandRegistrationService(private val commands: List<ICommand>) {
     fun registerCommands(discordApi: DiscordApi) {
 
-        //This wants to just be global
-
         val slashCommandBuilderList = mutableListOf<SlashCommandBuilder>()
 
         commands.forEach { command ->
@@ -20,8 +18,7 @@ class CommandRegistrationService(private val commands: List<ICommand>) {
             slashCommandBuilder.setOptions(command.options)
             slashCommandBuilderList.add(slashCommandBuilder)
         }
-        discordApi.bulkOverwriteServerSlashCommands(discordApi.servers.first(), slashCommandBuilderList)
-            .join()
+        discordApi.bulkOverwriteGlobalSlashCommands(slashCommandBuilderList).join()
 
     }
 
