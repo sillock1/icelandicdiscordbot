@@ -35,12 +35,16 @@ class InterrogativeVerbImageCreator(private val tableDrawingCreator: TableDrawin
         g2d.color = backgroundColor
         g2d.fillRect(0,0, width, height)
 
-        val subHeadingList = mutableListOf("Person", "Singular", "Plural")
+        g2d.font= Font("Segoe UI", Font.BOLD, 36)
+        g2d.color = Color.WHITE
+        g2d.drawString("Interrogative Form", 60, 180)
+
+        val subHeadingList = mutableListOf("", "Singular", "Plural")
 
         var imageDataList : MutableList<MutableList<String>> = mutableListOf()
         imageDataList.add(subHeadingList)
 
-        var tableYOffset = 160
+        var tableYOffset = 200
         for(grammaticalTense in grouped){
             for(grammaticalPerson in grammaticalTense.value){
                 for(voiceAndMood in grammaticalPerson.value){

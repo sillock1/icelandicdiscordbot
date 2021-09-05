@@ -32,6 +32,11 @@ class ImperativeVerbImageCreator(private val tableDrawingCreator: TableDrawingCr
         g2d.color = backgroundColor
         g2d.fillRect(0,0, width, height)
 
+        g2d.font= Font("Segoe UI", Font.BOLD, 36)
+        g2d.color = Color.WHITE
+        g2d.drawString("Imperative Form (Boðháttur)", 60, 180)
+
+
         val subHeadingList = mutableListOf("Person", "Active Voice", "Middle Voice")
 
         val imageDataList : MutableList<MutableList<String>> = mutableListOf()
@@ -46,7 +51,7 @@ class ImperativeVerbImageCreator(private val tableDrawingCreator: TableDrawingCr
         }
 
         tableDrawingCreator.drawTable(g2d, 4, tableXOffset, 260, 550, 70)
-        tablePopulator.populateTable(g2d, tableXOffset, 260, 24, 70, 60, "Imperative Form (Boðháttur)", imageDataList)
+        tablePopulator.populateTable(g2d, tableXOffset, 260, 24, 70, 60, "", imageDataList)
         tableXOffset+=520
 
         g2d.color = Color.WHITE

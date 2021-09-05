@@ -15,6 +15,7 @@ import sillock.icelandicdiscordbot.models.enums.GrammaticalVoice
 import sillock.icelandicdiscordbot.models.enums.VerbImageCreatorType
 import sillock.icelandicdiscordbot.models.inflectedforms.VerbForm
 import sillock.icelandicdiscordbot.services.DmiiCoreService
+import java.awt.image.BufferedImage
 import kotlin.reflect.typeOf
 
 @Component
@@ -27,7 +28,8 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
     override val description: String
         get() = "Finds conjugations of a verb"
     override val options: List<SlashCommandOption>
-        get() = listOf(
+        get() = listOf(SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The verb to search", true))
+            /*listOf(
             SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "ActiveVoice", "Active voice (Germynd)",
                 listOf(
                     SlashCommandOption.createWithChoices(SlashCommandOptionType.STRING, "usage", "Verb usage", true,
@@ -63,6 +65,7 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
                     SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "Interrogative", "Interrogative form (Spurnarmyndir)",
                         listOf(SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The verb to search", true)))
         )
+             */
 
     override fun execute(event: SlashCommandInteraction) {
         //Call a parser to grab relevant argument data
@@ -71,9 +74,9 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
         //Then filter on the data using the argument information
         //Then call the image creator factory and draw the appropriate table(s)
        // val wordParam = event.options.firstOrNull {     x -> x.stringValue.get() == "word" }//.getOptionStringValueByName("word")//.getOptionByName("word").get().stringValue
-        event.createImmediateResponder().setContent("Result:").respond()
-        val paramFilters = parseParams(event.options)
-        val response = dmiiCoreService.getVerbConjugation(paramFilters.word)
+        event.respondLater().join()
+       // val paramFilters = parseParams(event.options)
+        val response = dmiiCoreService.getVerbConjugation(event.firstOptionStringValue.get())
 
         if(response.isEmpty()) {
             MessageBuilder().setContent("No results").send(event.channel.get())
@@ -81,12 +84,52 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
         }
 
         val word = response.first()
-        val wordType = inflectionTypeMapper.map(word.shortHandWordClass) ?: return
+        inflectionTypeMapper.map(word.shortHandWordClass) ?: return
         val inflectedVerbs = mutableListOf<Pair<String, String>>()
         word.inflectionalFormList.forEach { x ->
             inflectedVerbs.add(Pair(x.grammaticalTagString, x.inflectedString))
         }
         val verbFormsList = verbMapper.map(inflectedVerbs)
+
+        val imageList: MutableList<BufferedImage> = mutableListOf()
+        VerbImageCreatorType.values().forEach { x ->
+            val imageCreator = verbImageCreatorFactory.create(x)
+            var filteredVerbs: List<VerbForm?>
+            if(imageCreator.verbImageCreatorType == VerbImageCreatorType.Interrogative){
+                filteredVerbs = filterVerb(verbFormsList, imperativeForm = false, interrogativeForm = true)
+            }
+            else if(imageCreator.verbImageCreatorType == VerbImageCreatorType.Imperative){
+                filteredVerbs = filterVerb(verbFormsList, imperativeForm = true, interrogativeForm = false)
+            }
+            else{
+                filteredVerbs = filterVerb(verbFormsList, imperativeForm = false, interrogativeForm = false)
+            }
+            imageList.addAll(imageCreator.create(word, filteredVerbs))
+        }
+
+        val msgBuilder = event.createFollowupMessageBuilder()
+
+        var i = 0
+        imageList.reversed().take(imageList.size-2).forEach { x ->
+            msgBuilder.addAttachment(x, "conjugation${i}.png")
+            i+=1
+            //messageBuilder.addAttachment(x, "conjugate${x.hashCode()}.png")
+        }
+        msgBuilder.send()
+
+        i = imageList.size-2
+        val messageBuilder = MessageBuilder()
+        imageList.reversed().take(2).forEach { x ->
+            messageBuilder.addAttachment(x, "conjugation${i}.png")
+            i+=1
+            //messageBuilder.addAttachment(x, "conjugate${x.hashCode()}.png")
+        }
+        messageBuilder.send(event.channel.get())
+
+
+        //messageBuilder.send(event.channel.get())
+        //messageResponder.send()
+        /*
         val filteredList = verbFormsList.filter { x ->
             paramFilters.voice?.let{y -> y == x?.grammaticalVoice} ?: true
                 && paramFilters.usage?.let{y -> y == x?.grammaticalUsage} ?: true
@@ -97,7 +140,7 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
             MessageBuilder().setContent("No results").send(event.channel.get())
             return
         }
-        val verbImageCreatorType: VerbImageCreatorType
+        //val verbImageCreatorType: VerbImageCreatorType
         if(filteredList.firstOrNull()?.grammaticalMood == GrammaticalMood.Imperative){
             verbImageCreatorType = VerbImageCreatorType.Imperative
         }
@@ -117,6 +160,14 @@ class ConjugateCommand(private val dmiiCoreService: DmiiCoreService,
             i+=1
         }
         messageBuilder.send(event.channel.get())
+         */
+    }
+
+    private fun filterVerb(verbFormList: List<VerbForm?>, imperativeForm: Boolean, interrogativeForm: Boolean): List<VerbForm?>{
+        val filteredFormList = verbFormList.filter { x ->
+            x?.interrogativeMood == interrogativeForm && if(imperativeForm) x.grammaticalMood == GrammaticalMood.Imperative else x.grammaticalMood != GrammaticalMood.Imperative
+        }
+        return filteredFormList.filterNotNull()
     }
 
     private fun parseParams(options: List<SlashCommandInteractionOption>) : ConjugateFilterObject{

@@ -41,8 +41,8 @@ class AdjectiveMapper: IInflectionalMapper {
                     grammaticalDegree = GrammaticalDegree.Superlative
                     strength = InflectedStrength.Weak
                 }
-                if(x.first.contains("KK")) grammaticalGender = GrammaticalGender.Male
-                if(x.first.contains("KVK")) grammaticalGender = GrammaticalGender.Female
+                if(x.first.contains("KK")) grammaticalGender = GrammaticalGender.Masculine
+                if(x.first.contains("KVK")) grammaticalGender = GrammaticalGender.Feminine
                 if(x.first.contains("HK")) grammaticalGender = GrammaticalGender.Neuter
                 if(x.first.contains("ET")) number = GrammaticalNumber.Singular
                 if(x.first.contains("FT")) number = GrammaticalNumber.Plural
