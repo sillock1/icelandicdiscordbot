@@ -27,9 +27,9 @@ class VerbMapper {
             if(x.first.contains("MM")) grammaticalVoice = GrammaticalVoice.MiddleVoice
             if(x.first.contains("GM")) grammaticalVoice = GrammaticalVoice.ActiveVoice
 
-            if(x.first.contains("FH")) grammaticalMood = GrammaticalMood.Indicative
-            if(x.first.contains("VH")) grammaticalMood = GrammaticalMood.Subjunctive
-            if(x.first.contains("BH")) grammaticalMood = GrammaticalMood.Imperative // Boðháttur
+            if(x.first.contains("FH")) grammaticalMood = GrammaticalMood.IndicativeMood
+            if(x.first.contains("VH")) grammaticalMood = GrammaticalMood.SubjunctiveMood
+            if(x.first.contains("BH")) grammaticalMood = GrammaticalMood.ImperativeMood // Boðháttur
 
             if(x.first.contains("NT")) grammaticalTense = GrammaticalTense.Present
             if(x.first.contains("ÞT")) grammaticalTense = GrammaticalTense.Past

@@ -4,7 +4,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConstructorBinding
-@ConfigurationProperties("dmiicore")
-data class ApiProperties(
-    var endpoint: String
+@ConfigurationProperties("apiendpoint")
+data class ApiEndpoint(
+    var dmiicore: String,
+    var ordabok: String,
+    var islex: String
 )

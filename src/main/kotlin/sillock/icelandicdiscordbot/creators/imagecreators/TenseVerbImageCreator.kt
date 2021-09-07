@@ -16,7 +16,7 @@ class TenseVerbImageCreator(private val tableDrawingCreator: TableDrawingCreator
         get() = VerbImageCreatorType.Tense
 
     override fun create(dmiiWord: DmiiWord, verbFormList: List<VerbForm?>): List<BufferedImage> {
-        var width = 600
+        var width = 1200
         val height = 800
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
@@ -28,18 +28,10 @@ class TenseVerbImageCreator(private val tableDrawingCreator: TableDrawingCreator
             .mapValues { (_, v) -> v.groupBy { it?.grammaticalPerson }.filter { it.key != null }}}}}
 
 
-        width = width * grouped.size
+
         var tableXOffset = 60
 
-        val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-        val g2d = bufferedImage.createGraphics()
 
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
-
-        g2d.color = backgroundColor
-        g2d.fillRect(0,0, width, height)
-
-        val subHeadingList = mutableListOf("Person", "Singular", "Plural")
 
         var imageDataList : MutableList<MutableList<String>> = mutableListOf()
         var imageList: MutableList<BufferedImage> = mutableListOf()
@@ -47,7 +39,17 @@ class TenseVerbImageCreator(private val tableDrawingCreator: TableDrawingCreator
         for(grammaticalVoice in grouped) {
             for (grammaticalUsage in grammaticalVoice.value) {
                 for (grammaticalMood in grammaticalUsage.value) {
+                    val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+                    val g2d = bufferedImage.createGraphics()
+
+                    g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+
+                    g2d.color = backgroundColor
+                    g2d.fillRect(0,0, width, height)
+
+                    val subHeadingList = mutableListOf("Person", "Singular", "Plural")
                     tableXOffset = 60
+
                     for (grammaticalTense in grammaticalMood.value) {
                         imageDataList.add(subHeadingList)
                         for (grammaticalPerson in grammaticalTense.value) {
@@ -57,7 +59,7 @@ class TenseVerbImageCreator(private val tableDrawingCreator: TableDrawingCreator
                             rowData.add(grammaticalPerson.value.getOrNull(1)?.conjugatedString ?: "--")
                             imageDataList.add(rowData)
                         }
-                        tableDrawingCreator.drawTable(g2d, 4, tableXOffset, tableYOffset, 550, 70)
+                        tableDrawingCreator.drawTable(g2d, imageDataList.size, tableXOffset, tableYOffset, 550, 70)
                         tablePopulator.populateTable(
                             g2d,
                             tableXOffset,
@@ -77,10 +79,12 @@ class TenseVerbImageCreator(private val tableDrawingCreator: TableDrawingCreator
 
                     g2d.font = Font("Segoe UI", Font.BOLD, 36)
                     g2d.color = Color.ORANGE
-                    g2d.drawString("Verb (Sagnorð)", dmiiWord.baseWordForm.length * 150, 100)
+                    g2d.drawString("Verb (Sagnorð)", dmiiWord.baseWordForm.length*50, 100)
 
                     g2d.color = Color.WHITE
+                    g2d.font = Font("Segoe UI", Font.BOLD, 48)
                     g2d.drawString(grammaticalVoice.key.toString(), 60, 180)
+                    g2d.font = Font("Segoe UI", Font.BOLD, 36)
                     g2d.drawString(grammaticalUsage.key.toString(), 60, 250)
                     g2d.drawString(grammaticalMood.key.toString(), 60, 300)
 

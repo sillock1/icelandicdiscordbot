@@ -2,9 +2,9 @@ package sillock.icelandicdiscordbot.creators.imagecreators
 
 import org.springframework.stereotype.Component
 import sillock.icelandicdiscordbot.mappers.NounGenderMapper
-import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 import sillock.icelandicdiscordbot.models.enums.InflectionType
 import sillock.icelandicdiscordbot.models.inflectedforms.InflectedForm
+import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 import java.awt.Color
 import java.awt.Font
 import java.awt.RenderingHints
@@ -44,8 +44,8 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
                 val rowData : MutableList<String> = mutableListOf()
                 val nounDeclensionForms = grammaticalForm.value
                 rowData.add(grammaticalForm.key.toString().substring(0, 3) + ".")
-                rowData.add(nounDeclensionForms.getOrNull(0)?.inflectedString ?: "Undefined")
-                rowData.add(nounDeclensionForms.getOrNull(1)?.inflectedString ?: "Undefined")
+                rowData.add(nounDeclensionForms.getOrNull(0)?.inflectedString ?: "--")
+                rowData.add(nounDeclensionForms.getOrNull(1)?.inflectedString ?: "--")
                 imageDataList.add(rowData)
             }
             tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 500, 70)

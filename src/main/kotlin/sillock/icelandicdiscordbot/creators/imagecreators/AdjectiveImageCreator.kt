@@ -58,9 +58,9 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
                         val rowData : MutableList<String> = mutableListOf()
                         val genderedForms = grammaticalForm.value
                         rowData.add(grammaticalForm.key.toString().substring(0, 3) + ".")
-                        rowData.add(genderedForms.getOrNull(0)?.inflectedString ?: "Undefined")
-                        rowData.add(genderedForms.getOrNull(1)?.inflectedString ?: "Undefined")
-                        rowData.add(genderedForms.getOrNull(2)?.inflectedString ?: "Undefined")
+                        rowData.add(genderedForms.getOrNull(0)?.inflectedString ?: "--")
+                        rowData.add(genderedForms.getOrNull(1)?.inflectedString ?: "--")
+                        rowData.add(genderedForms.getOrNull(2)?.inflectedString ?: "--")
                         imageDataList.add(rowData)
                     }
                     tableDrawingCreator.drawTable(g2d, 5, tableXOffset, tableYOffset, 600, 70)

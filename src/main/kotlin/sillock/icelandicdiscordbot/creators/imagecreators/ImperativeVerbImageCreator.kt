@@ -45,8 +45,8 @@ class ImperativeVerbImageCreator(private val tableDrawingCreator: TableDrawingCr
         for(grammaticalPerson in grouped){
             val rowData : MutableList<String> = mutableListOf()
             rowData.add(grammaticalPerson.value.getOrNull(0)?.let{x -> if(x.clipped) "Clipped" else x.grammaticalNumber.toString()}!!)
-            rowData.add(grammaticalPerson.value.getOrNull(0)?.conjugatedString ?: "")
-            rowData.add(grammaticalPerson.value.getOrNull(1)?.conjugatedString ?: "")
+            rowData.add(grammaticalPerson.value.getOrNull(0)?.conjugatedString ?: "--")
+            rowData.add(grammaticalPerson.value.getOrNull(1)?.conjugatedString ?: "--")
             imageDataList.add(rowData)
         }
 
