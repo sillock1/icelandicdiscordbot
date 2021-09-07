@@ -1,11 +1,12 @@
 package sillock.icelandicdiscordbot.commands
 
-import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.interaction.SlashCommandInteraction
 import org.javacord.api.interaction.SlashCommandOption
 import org.javacord.api.interaction.SlashCommandOptionChoice
 import org.javacord.api.interaction.SlashCommandOptionType
 import org.springframework.stereotype.Component
+import sillock.icelandicdiscordbot.helpers.Failure
+import sillock.icelandicdiscordbot.helpers.Success
 import sillock.icelandicdiscordbot.processors.DmiiDuplicateWordProcessor
 import sillock.icelandicdiscordbot.processors.InflectionProcessor
 import sillock.icelandicdiscordbot.services.DmiiCoreService
@@ -38,20 +39,26 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
             SlashCommandOption.create(SlashCommandOptionType.STRING, "word", "The word to search", true))
 
     override fun execute(event: SlashCommandInteraction) {
+        event.respondLater().join()
+        val responseMessager = event.createFollowupMessageBuilder()
         val wordTypeParam = event.firstOptionStringValue
         val wordParam = event.secondOptionStringValue
-        val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get())
 
-        if(response.count() != 1){
-            dmiiDuplicateWordProcessor.response(event, response)
-            return
+        when(val response = dmiiCoreService.getDeclensions(wordTypeParam.get(), wordParam.get())){
+            is Failure -> {
+                responseMessager.setContent(response.reason).send()
+            }
+            is Success -> {
+                if(response.value.count() != 1){
+                    dmiiDuplicateWordProcessor.response(event, response.value)
+                    return
+                }
+                val images = inflectionProcessor.process(response.value)
+                for(image in images.reversed()) {
+                    responseMessager.addAttachment(image, "inflected${image.hashCode()}.png")
+                }
+                responseMessager.send()
+            }
         }
-        event.createImmediateResponder().setContent("Result:").respond()
-        val messageBuilder = MessageBuilder()
-        val images = inflectionProcessor.process(response)
-        for(image in images.reversed()) {
-            messageBuilder.addAttachment(image, "inflected${image.hashCode()}.png")
-        }
-        messageBuilder.send(event.channel.get())
     }
 }

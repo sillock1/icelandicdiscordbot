@@ -42,8 +42,8 @@ class PersonalPronounImageCreator(private val tableDrawingCreator: TableDrawingC
         for(grammaticalForm in grouped){
             val rowData : MutableList<String> = mutableListOf()
             rowData.add(grammaticalForm.key.toString().substring(0, 3) + ".")
-            rowData.add(grammaticalForm.value.getOrNull(0)?.inflectedString ?: "Undefined")
-            rowData.add(grammaticalForm.value.getOrNull(1)?.inflectedString ?: "Undefined")
+            rowData.add(grammaticalForm.value.getOrNull(0)?.inflectedString ?: "--")
+            rowData.add(grammaticalForm.value.getOrNull(1)?.inflectedString ?: "--")
             imageDataList.add(rowData)
         }
         tableDrawingCreator.drawTable(g2d, 5, tableXOffset, 260, 500, 70)

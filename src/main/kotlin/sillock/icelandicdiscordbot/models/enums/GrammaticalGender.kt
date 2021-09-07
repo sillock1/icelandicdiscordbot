@@ -1,7 +1,7 @@
 package sillock.icelandicdiscordbot.models.enums
 
 enum class GrammaticalGender {
-    Male,
-    Female,
+    Masculine,
+    Feminine,
     Neuter
 }

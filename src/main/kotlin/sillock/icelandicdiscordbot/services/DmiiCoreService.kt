@@ -1,43 +1,84 @@
 package sillock.icelandicdiscordbot.services
 
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.stereotype.Service
-import sillock.icelandicdiscordbot.configuration.ApiProperties
-import sillock.icelandicdiscordbot.helpers.HttpResponseHandler
+import sillock.icelandicdiscordbot.configuration.ApiEndpoint
+import sillock.icelandicdiscordbot.helpers.Failure
+import sillock.icelandicdiscordbot.helpers.HttpRequestClient
+import sillock.icelandicdiscordbot.helpers.OperationResult
+import sillock.icelandicdiscordbot.helpers.Success
 import sillock.icelandicdiscordbot.models.serialisations.DmiiWord
 
 @Service
-class DmiiCoreService (private val apiProperties: ApiProperties){
+@EnableCaching
+class DmiiCoreService (private val apiEndpoint: ApiEndpoint,
+                       private val httpRequestClient: HttpRequestClient){
 
-    var httpClient: HttpClient = HttpClient(CIO)
-    var httpResponseHandler: HttpResponseHandler = HttpResponseHandler()
-
-    @Cacheable("headword")
-    fun getHeadword(headword: String): List<DmiiWord> = runBlocking {
-        val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/ord/${headword}")
-        httpResponseHandler.handleResponse(response)
+    val json = Json {
+        ignoreUnknownKeys = true
     }
 
-    @Cacheable("verb")
-    fun getVerbConjugation(verb: String): List<DmiiWord> = runBlocking {
-        val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/ord/so/${verb}")
-        httpResponseHandler.handleResponse(response)
+    @Cacheable(value = ["headword"], unless = "#result instanceof T(sillock.icelandicdiscordbot.helpers.Failure)")
+    fun getHeadword(headword: String): OperationResult<List<DmiiWord>, String> {
+        return when (val requestResult = runBlocking{
+            httpRequestClient.handle<String>("${apiEndpoint.dmiicore}/ord/${headword}")
+        }) {
+            is Failure -> {
+                Failure(requestResult.reason)
+            }
+            is Success -> {
+                val wordResult = if(requestResult.value != "{\"0\":\"\"}") json.decodeFromString<List<DmiiWord>>(requestResult.value) else listOf()
+                Success(wordResult)
+            }
+        }
     }
 
-    @Cacheable("declension")
-    fun getDeclensions(wordType: String, word: String) : List<DmiiWord> = runBlocking {
-        val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/beygingarmynd/${wordType}/${word}")
-        httpResponseHandler.handleResponse(response)
+    @Cacheable(value = ["verb"], unless = "#result instanceof T(sillock.icelandicdiscordbot.helpers.Failure)")
+    fun getVerbConjugation(verb: String): OperationResult<List<DmiiWord>, String> {
+        return when (val requestResult = runBlocking{
+            httpRequestClient.handle<String>("${apiEndpoint.dmiicore}/ord/so/${verb}")
+        }) {
+            is Failure -> {
+                Failure(requestResult.reason)
+            }
+            is Success -> {
+                val wordResult = if(requestResult.value != "{\"0\":\"\"}") json.decodeFromString<List<DmiiWord>>(requestResult.value) else listOf()
+                Success(wordResult)
+            }
+        }
     }
 
-    @Cacheable("guid")
-    fun getDeclensionsByGuid(guid: String) : List<DmiiWord> = runBlocking {
-        val response: HttpResponse = httpClient.get("${apiProperties.endpoint}/ord/${guid}")
-        httpResponseHandler.handleResponse(response)
+    @Cacheable(value = ["declension"], unless = "#result instanceof T(sillock.icelandicdiscordbot.helpers.Failure)")
+    fun getDeclensions(wordType: String, word: String) : OperationResult<List<DmiiWord>, String> {
+        return when (val requestResult = runBlocking{
+            httpRequestClient.handle<String>("${apiEndpoint.dmiicore}/beygingarmynd/${wordType}/${word}")
+        }) {
+            is Failure -> {
+                Failure(requestResult.reason)
+            }
+            is Success -> {
+                val wordResult = if(requestResult.value != "{\"0\":\"\"}") json.decodeFromString<List<DmiiWord>>(requestResult.value) else listOf()
+                Success(wordResult)
+            }
+        }
+    }
+
+    @Cacheable(value = ["guid"], unless = "#result instanceof T(sillock.icelandicdiscordbot.helpers.Failure)")
+    fun getDeclensionsByGuid(guid: String) : OperationResult<List<DmiiWord>, String> {
+        return when (val requestResult = runBlocking{
+            httpRequestClient.handle<String>("${apiEndpoint.dmiicore}/ord/${guid}")
+        }) {
+            is Failure -> {
+                Failure(requestResult.reason)
+            }
+            is Success -> {
+                val wordResult = if(requestResult.value != "{\"0\":\"\"}") json.decodeFromString<List<DmiiWord>>(requestResult.value) else listOf()
+                Success(wordResult)
+            }
+        }
     }
 }

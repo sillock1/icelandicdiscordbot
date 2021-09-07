@@ -16,32 +16,32 @@ class GenericGenderMapper : IInflectionalMapper{
         val genderedForms = mutableListOf<GenderedForm?>()
             formInflectedWordPair.forEach { pair ->
                 val form = when(pair.first){
-                    "KK-NFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Nominative, GrammaticalGender.Male)}
-                    "KVK-NFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Nominative, GrammaticalGender.Female)}
+                    "KK-NFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Nominative, GrammaticalGender.Masculine)}
+                    "KVK-NFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Nominative, GrammaticalGender.Feminine)}
                     "HK-NFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Nominative, GrammaticalGender.Neuter)}
-                    "KK-NFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Nominative, GrammaticalGender.Male)}
-                    "KVK-NFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Nominative, GrammaticalGender.Female)}
+                    "KK-NFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Nominative, GrammaticalGender.Masculine)}
+                    "KVK-NFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Nominative, GrammaticalGender.Feminine)}
                     "HK-NFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Nominative, GrammaticalGender.Neuter)}
 
-                    "KK-ÞFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Accusative, GrammaticalGender.Male)}
-                    "KVK-ÞFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Accusative, GrammaticalGender.Female)}
+                    "KK-ÞFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Accusative, GrammaticalGender.Masculine)}
+                    "KVK-ÞFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Accusative, GrammaticalGender.Feminine)}
                     "HK-ÞFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Accusative, GrammaticalGender.Neuter)}
-                    "KK-ÞFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Accusative, GrammaticalGender.Male)}
-                    "KVK-ÞFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Accusative, GrammaticalGender.Female)}
+                    "KK-ÞFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Accusative, GrammaticalGender.Masculine)}
+                    "KVK-ÞFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Accusative, GrammaticalGender.Feminine)}
                     "HK-ÞFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Accusative, GrammaticalGender.Neuter)}
 
-                    "KK-ÞGFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Dative, GrammaticalGender.Male)}
-                    "KVK-ÞGFET" -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Dative, GrammaticalGender.Female)}
+                    "KK-ÞGFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Dative, GrammaticalGender.Masculine)}
+                    "KVK-ÞGFET" -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Dative, GrammaticalGender.Feminine)}
                     "HK-ÞGFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Dative, GrammaticalGender.Neuter)}
-                    "KK-ÞGFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Dative, GrammaticalGender.Male)}
-                    "KVK-ÞGFFT" -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Dative, GrammaticalGender.Female)}
+                    "KK-ÞGFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Dative, GrammaticalGender.Masculine)}
+                    "KVK-ÞGFFT" -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Dative, GrammaticalGender.Feminine)}
                     "HK-ÞGFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Dative, GrammaticalGender.Neuter)}
 
-                    "KK-EFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Genitive, GrammaticalGender.Male)}
-                    "KVK-EFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Genitive, GrammaticalGender.Female)}
+                    "KK-EFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Genitive, GrammaticalGender.Masculine)}
+                    "KVK-EFET"  -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Genitive, GrammaticalGender.Feminine)}
                     "HK-EFET"   -> {GenderedForm(pair.second, GrammaticalNumber.Singular, GrammaticalForm.Genitive, GrammaticalGender.Neuter)}
-                    "KK-EFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Genitive, GrammaticalGender.Male)}
-                    "KVK-EFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Genitive, GrammaticalGender.Female)}
+                    "KK-EFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Genitive, GrammaticalGender.Masculine)}
+                    "KVK-EFFT"  -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Genitive, GrammaticalGender.Feminine)}
                     "HK-EFFT"   -> {GenderedForm(pair.second, GrammaticalNumber.Plural, GrammaticalForm.Genitive, GrammaticalGender.Neuter)}
                     else -> null
                 }

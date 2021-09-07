@@ -4,8 +4,8 @@ import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.event.interaction.MessageComponentCreateEvent
 import org.javacord.api.listener.interaction.MessageComponentCreateListener
 import org.springframework.stereotype.Component
-import sillock.icelandicdiscordbot.services.DmiiCoreService
 import sillock.icelandicdiscordbot.processors.InflectionProcessor
+import sillock.icelandicdiscordbot.services.DmiiCoreService
 
 @Component
 class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
@@ -18,11 +18,14 @@ class ButtonResponseListener(private val dmiiCoreService: DmiiCoreService,
         event.interaction.createImmediateResponder().setContent("Result:").respond()
 
         val messageBuilder = MessageBuilder()
+        /*
         val imageList = inflectionProcessor.process(response)
         imageList.forEach{
             x ->  messageBuilder.addAttachment(x, "inflect.png").send(event.interaction.channel.get())
         }
         //Delete the original message to prevent spam
         event.messageComponentInteraction.message?.get()?.delete()
+
+         */
     }
 }

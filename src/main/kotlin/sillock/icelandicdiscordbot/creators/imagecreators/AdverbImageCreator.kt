@@ -39,7 +39,7 @@ class AdverbImageCreator(private val tableDrawingCreator: TableDrawingCreator,
         val rowData : MutableList<String> = mutableListOf()
             imageDataList.add(subHeadingList)
             for(form in inflectionalFormList){
-                rowData.add(form?.inflectedString ?: "Undefined")
+                rowData.add(form?.inflectedString ?: "--")
             }
             imageDataList.add(rowData)
             tableDrawingCreator.drawTable(g2d, 2, tableXOffset, 260, 480, 70)
