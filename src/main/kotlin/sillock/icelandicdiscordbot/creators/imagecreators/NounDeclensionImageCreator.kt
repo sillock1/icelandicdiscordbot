@@ -18,12 +18,11 @@ class NounDeclensionImageCreator(private val tableDrawingCreator: TableDrawingCr
         get() = InflectionType.Article
 
     override fun create(dmiiWord: DmiiWord, inflectionalFormList: List<InflectedForm?>): List<BufferedImage> {
-        var width = 600
         val height = 700
         val backgroundColor = Color(54, 57, 63) //Discord embed colour
 
         val grouped = inflectionalFormList.groupBy { it?.grammaticalNumber }.mapValues { (_, v) -> v.groupBy { it?.grammaticalForm } }
-        width = (width * grouped.size)
+        val width = if(grouped.size > 1) 570 * grouped.size else 700
 
         var tableXOffset = 60
 

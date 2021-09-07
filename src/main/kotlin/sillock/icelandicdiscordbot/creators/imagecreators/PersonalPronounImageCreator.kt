@@ -57,7 +57,7 @@ class PersonalPronounImageCreator(private val tableDrawingCreator: TableDrawingC
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE
-        g2d.drawString(wordType, 60, 220)
+        g2d.drawString(wordType, dmiiWord.baseWordForm.length*55, 220)
 
 
         g2d.dispose()

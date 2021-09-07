@@ -41,7 +41,7 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
             g2d.color = backgroundColor
             g2d.fillRect(0,0, imageWidth, imageHeight)
 
-            val subHeadingList = mutableListOf("Form", "Male", "Female", "Neuter")
+            val subHeadingList = mutableListOf("Form", "Masculine", "Feminine", "Neuter")
 
             var imageDataList : MutableList<MutableList<String>> = mutableListOf()
             imageDataList.add(subHeadingList)
@@ -80,7 +80,7 @@ class AdjectiveImageCreator(private val tableDrawingCreator: TableDrawingCreator
 
             g2d.font= Font("Segoe UI", Font.BOLD, 64)
             g2d.color = Color.ORANGE
-            g2d.drawString(wordType, 300, 100)
+            g2d.drawString(wordType, dmiiWord.baseWordForm.length*55, 100)
             g2d.dispose()
             bufferedImageList.add(bufferedImage)
         }
