@@ -26,23 +26,25 @@ repositories {
 
 dependencies {
     implementation("org.javacord:javacord:3.3.2")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-security:2.5.4")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.5.4")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.5.4")
+    implementation("org.springframework.boot:spring-boot-starter:2.5.4")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.ktor:ktor-client-core:1.6.1")
-    implementation("io.ktor:ktor-client-cio:1.6.1")
-    implementation("io.ktor:ktor-client-logging:1.6.1")
-    implementation("io.ktor:ktor-client-serialization:1.6.1")
-    implementation("org.seleniumhq.selenium:selenium-firefox-driver:3.141.59")
-    implementation("org.seleniumhq.selenium:selenium-java:3.141.59")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.kotest:kotest-runner-junit5:4.5.0")
-    testImplementation ("io.kotest:kotest-assertions-core-jvm:4.5.0" )// for kotest core jvm assertions
-    testImplementation ("io.kotest:kotest-property-jvm:4.5.0")// for kotest property test
+    implementation("io.ktor:ktor-client-core:1.6.3")
+    implementation("io.ktor:ktor-client-cio:1.6.3")
+    implementation("io.ktor:ktor-client-logging:1.6.3")
+    implementation("io.ktor:ktor-client-serialization:1.6.3")
+    testImplementation("io.ktor:ktor-server-test-host:1.6.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:2.5.4")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.5.4")
+    testImplementation("io.kotest:kotest-runner-junit5:4.6.1")
+    testImplementation ("io.kotest:kotest-assertions-core-jvm:4.6.1")// for kotest core jvm assertions
+    testImplementation ("io.kotest:kotest-property-jvm:4.6.1")// for kotest property test
+    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
 }
 
 tasks.withType<KotlinCompile> {
