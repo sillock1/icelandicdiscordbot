@@ -60,7 +60,7 @@ class ImperativeVerbImageCreator(private val tableDrawingCreator: TableDrawingCr
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE
-        g2d.drawString("Verb (Sagnorð)", dmiiWord.baseWordForm.length*50, 100)
+        g2d.drawString("Verb (Sagnorð)", dmiiWord.baseWordForm.length*55, 100)
 
         g2d.dispose()
 

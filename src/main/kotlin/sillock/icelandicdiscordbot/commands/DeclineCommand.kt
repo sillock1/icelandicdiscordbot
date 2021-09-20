@@ -50,6 +50,7 @@ class DeclineCommand(private val dmiiCoreService: DmiiCoreService,
             }
             is Success -> {
                 if(response.value.count() != 1){
+                    responseMessager.setContent("Sorry I couldn't find the exact word you were looking for...").send()
                     dmiiDuplicateWordProcessor.response(event, response.value)
                     return
                 }

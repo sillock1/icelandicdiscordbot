@@ -35,7 +35,7 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
         g2d.color = backgroundColor
         g2d.fillRect(0,0, width, height)
 
-        val subHeadingList = mutableListOf("Form", "Male", "Female", "Neuter")
+        val subHeadingList = mutableListOf("Form", "Masculine", "Feminine", "Neuter")
         for(grammaticalNum in grouped){
             val imageDataList : MutableList<MutableList<String>> = mutableListOf()
             imageDataList.add(subHeadingList)
@@ -61,7 +61,7 @@ class GenderedImageCreator(private val tableDrawingCreator: TableDrawingCreator,
 
         g2d.font= Font("Segoe UI", Font.BOLD, 36)
         g2d.color = Color.ORANGE
-        g2d.drawString(wordType, 60, 220)
+        g2d.drawString(wordType, dmiiWord.baseWordForm.length*55, 100)
 
 
         g2d.dispose()
